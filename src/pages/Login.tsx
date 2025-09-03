@@ -1,18 +1,49 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, BookOpen } from "lucide-react";
 import { CustomButton } from "@/components/ui/custom-button";
 import { Loader } from "@/components/ui/loader";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { signIn } = useAuth();
+  const { toast } = useToast();
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    // Simulate login
-    setTimeout(() => setIsLoading(false), 2000);
+    
+    try {
+      const { error } = await signIn(email, password);
+      
+      if (error) {
+        toast({
+          title: "Ошибка входа",
+          description: error.message,
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Успешный вход",
+          description: "Добро пожаловать в StudyVibe!"
+        });
+        navigate("/");
+      }
+    } catch (error) {
+      toast({
+        title: "Ошибка",
+        description: "Произошла неожиданная ошибка",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -23,24 +54,10 @@ export default function Login() {
           <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
             <BookOpen size={32} className="text-background" />
           </div>
-          <h1 className="text-2xl font-bold">Добро пожаловать</h1>
+          <h1 className="text-2xl font-bold">Добро пожаловать в StudyVibe</h1>
           <p className="text-text-muted mt-2">Войдите в свой аккаунт</p>
         </div>
 
-        {/* Auth Notice */}
-        <div className="homework-card mb-6 border-primary/20">
-          <div className="text-center">
-            <h3 className="font-bold text-primary mb-2">Требуется Supabase</h3>
-            <p className="text-sm text-text-muted mb-4">
-              Для работы с регистрацией и SQL базой данных необходимо подключить Supabase интеграцию
-            </p>
-            <div className="bg-primary/10 p-3 rounded-lg">
-              <p className="text-xs text-primary">
-                Нажмите зеленую кнопку Supabase в правом верхнем углу интерфейса
-              </p>
-            </div>
-          </div>
-        </div>
 
         {/* Login Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -49,6 +66,8 @@ export default function Login() {
             <input
               type="email"
               required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-3 bg-surface-elevated border border-border rounded-xl 
                        text-foreground placeholder-text-muted focus:outline-none focus:ring-2 
                        focus:ring-primary focus:border-transparent"
@@ -62,6 +81,8 @@ export default function Login() {
               <input
                 type={showPassword ? "text" : "password"}
                 required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-3 bg-surface-elevated border border-border rounded-xl 
                          text-foreground placeholder-text-muted focus:outline-none focus:ring-2 
                          focus:ring-primary focus:border-transparent pr-12"

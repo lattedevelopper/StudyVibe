@@ -8,6 +8,7 @@ interface HomeworkCardProps {
   timeLeft: string;
   isCompleted?: boolean;
   description: string;
+  onDetailsClick?: () => void;
 }
 
 export const HomeworkCard = ({
@@ -17,6 +18,7 @@ export const HomeworkCard = ({
   timeLeft,
   isCompleted = false,
   description,
+  onDetailsClick,
 }: HomeworkCardProps) => {
   return (
     <div className="homework-card">
@@ -47,11 +49,12 @@ export const HomeworkCard = ({
         <CustomButton className="text-sm py-2 px-4">
           {isCompleted ? "Просмотреть" : "Выполнить"}
         </CustomButton>
-        {!isCompleted && (
-          <button className="text-sm text-text-muted hover:text-foreground transition-colors">
-            Подробнее
-          </button>
-        )}
+        <button 
+          onClick={onDetailsClick}
+          className="text-sm text-text-muted hover:text-foreground transition-colors"
+        >
+          Подробнее
+        </button>
       </div>
     </div>
   );

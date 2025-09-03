@@ -1,19 +1,53 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, BookOpen } from "lucide-react";
 import { CustomButton } from "@/components/ui/custom-button";
 import { Loader } from "@/components/ui/loader";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    class: "",
+    password: ""
+  });
+  const { signUp } = useAuth();
+  const { toast } = useToast();
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    // Simulate registration
-    setTimeout(() => setIsLoading(false), 2000);
+    
+    try {
+      const { error } = await signUp(formData.email, formData.password, formData.name, formData.class);
+      
+      if (error) {
+        toast({
+          title: "Ошибка регистрации",
+          description: error.message,
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Регистрация успешна",
+          description: "Проверьте почту для подтверждения аккаунта"
+        });
+        navigate("/login");
+      }
+    } catch (error) {
+      toast({
+        title: "Ошибка",
+        description: "Произошла неожиданная ошибка",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -24,7 +58,7 @@ export default function Register() {
           <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
             <BookOpen size={32} className="text-background" />
           </div>
-          <h1 className="text-2xl font-bold">Создать аккаунт</h1>
+          <h1 className="text-2xl font-bold">Создать аккаунт StudyVibe</h1>
           <p className="text-text-muted mt-2">Зарегистрируйтесь для начала</p>
         </div>
 
@@ -35,6 +69,8 @@ export default function Register() {
             <input
               type="text"
               required
+              value={formData.name}
+              onChange={(e) => setFormData({...formData, name: e.target.value})}
               className="w-full px-4 py-3 bg-surface-elevated border border-border rounded-xl 
                        text-foreground placeholder-text-muted focus:outline-none focus:ring-2 
                        focus:ring-primary focus:border-transparent"
@@ -47,6 +83,8 @@ export default function Register() {
             <input
               type="email"
               required
+              value={formData.email}
+              onChange={(e) => setFormData({...formData, email: e.target.value})}
               className="w-full px-4 py-3 bg-surface-elevated border border-border rounded-xl 
                        text-foreground placeholder-text-muted focus:outline-none focus:ring-2 
                        focus:ring-primary focus:border-transparent"
@@ -58,6 +96,8 @@ export default function Register() {
             <label className="block text-sm font-medium mb-2">Класс</label>
             <select
               required
+              value={formData.class}
+              onChange={(e) => setFormData({...formData, class: e.target.value})}
               className="w-full px-4 py-3 bg-surface-elevated border border-border rounded-xl 
                        text-foreground focus:outline-none focus:ring-2 
                        focus:ring-primary focus:border-transparent"
@@ -75,6 +115,8 @@ export default function Register() {
               <input
                 type={showPassword ? "text" : "password"}
                 required
+                value={formData.password}
+                onChange={(e) => setFormData({...formData, password: e.target.value})}
                 className="w-full px-4 py-3 bg-surface-elevated border border-border rounded-xl 
                          text-foreground placeholder-text-muted focus:outline-none focus:ring-2 
                          focus:ring-primary focus:border-transparent pr-12"
@@ -90,26 +132,6 @@ export default function Register() {
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-2">Подтвердите пароль</label>
-            <div className="relative">
-              <input
-                type={showConfirmPassword ? "text" : "password"}
-                required
-                className="w-full px-4 py-3 bg-surface-elevated border border-border rounded-xl 
-                         text-foreground placeholder-text-muted focus:outline-none focus:ring-2 
-                         focus:ring-primary focus:border-transparent pr-12"
-                placeholder="••••••••"
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-muted hover:text-foreground"
-              >
-                {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-              </button>
-            </div>
-          </div>
 
           <CustomButton 
             type="submit" 
