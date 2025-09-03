@@ -60,9 +60,6 @@ All colors MUST be HSL.
     -moz-osx-font-smoothing: grayscale;
   }
 
-  html {
-    @apply dark; /* Force dark theme */
-  }
 }
 
 /* Custom Components */
