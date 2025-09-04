@@ -9,6 +9,8 @@ interface HomeworkCardProps {
   isCompleted?: boolean;
   description: string;
   onDetailsClick?: () => void;
+  onExecuteClick?: () => void;
+  homeworkId?: string;
 }
 
 export const HomeworkCard = ({
@@ -19,6 +21,7 @@ export const HomeworkCard = ({
   isCompleted = false,
   description,
   onDetailsClick,
+  onExecuteClick,
 }: HomeworkCardProps) => {
   return (
     <div className="homework-card">
@@ -46,15 +49,20 @@ export const HomeworkCard = ({
       </div>
       
       <div className="flex gap-2">
-        <CustomButton className="text-sm py-2 px-4">
+        <CustomButton 
+          onClick={isCompleted ? onDetailsClick : onExecuteClick}
+          className="text-sm py-2 px-4"
+        >
           {isCompleted ? "Просмотреть" : "Выполнить"}
         </CustomButton>
-        <button 
-          onClick={onDetailsClick}
-          className="text-sm text-text-muted hover:text-foreground transition-colors"
-        >
-          Подробнее
-        </button>
+        {!isCompleted && (
+          <button 
+            onClick={onDetailsClick}
+            className="text-sm text-text-muted hover:text-foreground transition-colors"
+          >
+            Подробнее
+          </button>
+        )}
       </div>
     </div>
   );

@@ -1,46 +1,89 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Search as SearchIcon, Filter } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import { HomeworkCard } from "@/components/homework/homework-card";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 
-const mockHomework = [
-  {
-    id: 1,
-    title: "Решение квадратных уравнений",
-    subject: "Математика",
-    dueDate: "25 декабря",
-    timeLeft: "2 дня",
-    description: "Решить уравнения из учебника, страницы 45-47",
-    isCompleted: false,
-  },
-  {
-    id: 2,
-    title: "Сочинение по роману Война и мир",
-    subject: "Литература",
-    dueDate: "28 декабря",
-    timeLeft: "5 дней",
-    description: "Написать эссе на тему характеры главных героев",
-    isCompleted: true,
-  },
-];
+interface Homework {
+  id: string;
+  title: string;
+  subject: string;
+  description: string;
+  due_date: string;
+}
+
+interface HomeworkSubmission {
+  homework_id: string;
+  is_completed: boolean;
+}
 
 export default function Search() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [homework, setHomework] = useState<Homework[]>([]);
+  const [submissions, setSubmissions] = useState<HomeworkSubmission[]>([]);
+
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+    loadHomework();
+    loadSubmissions();
+  }, [user, navigate]);
+
+  const loadHomework = async () => {
+    const { data } = await supabase
+      .from("homework")
+      .select("*")
+      .order("due_date", { ascending: true });
+    
+    setHomework(data || []);
+  };
+
+  const loadSubmissions = async () => {
+    if (!user) return;
+    
+    const { data } = await supabase
+      .from("homework_submissions")
+      .select("homework_id, is_completed")
+      .eq("user_id", user.id);
+    
+    setSubmissions(data || []);
+  };
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     if (query.trim()) {
       setIsLoading(true);
-      // Simulate search delay
-      setTimeout(() => setIsLoading(false), 1000);
+      setTimeout(() => setIsLoading(false), 500);
     }
   };
 
-  const filteredHomework = mockHomework.filter(hw =>
+  const filteredHomework = homework.filter(hw =>
     hw.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     hw.subject.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const getTimeLeft = (dueDate: string) => {
+    const now = new Date();
+    const due = new Date(dueDate);
+    const diffTime = due.getTime() - now.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays < 0) return "Просрочено";
+    if (diffDays === 0) return "Сегодня";
+    if (diffDays === 1) return "Завтра";
+    return `${diffDays} дней`;
+  };
+
+  const isCompleted = (homeworkId: string) => {
+    return submissions.find(s => s.homework_id === homeworkId)?.is_completed || false;
+  };
 
   return (
     <div className="min-h-screen pb-20 px-4 pt-6">
@@ -74,8 +117,18 @@ export default function Search() {
           <div className="space-y-4">
             {searchQuery ? (
               filteredHomework.length > 0 ? (
-                filteredHomework.map((homework) => (
-                  <HomeworkCard key={homework.id} {...homework} />
+                filteredHomework.map((hw) => (
+                  <HomeworkCard 
+                    key={hw.id}
+                    title={hw.title}
+                    subject={hw.subject}
+                    dueDate={new Date(hw.due_date).toLocaleDateString('ru-RU')}
+                    timeLeft={getTimeLeft(hw.due_date)}
+                    description={hw.description}
+                    isCompleted={isCompleted(hw.id)}
+                    onDetailsClick={() => navigate(`/homework/${hw.id}`)}
+                    onExecuteClick={() => navigate(`/homework/${hw.id}`)}
+                  />
                 ))
               ) : (
                 <div className="text-center py-12">

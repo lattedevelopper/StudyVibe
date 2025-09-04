@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, Bell, Calendar, BookOpen } from "lucide-react";
 import { HomeworkCard } from "@/components/homework/homework-card";
+import { NotificationPanel } from "@/components/notifications/notification-panel";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -23,6 +24,7 @@ export default function Index() {
   const navigate = useNavigate();
   const [homework, setHomework] = useState<Homework[]>([]);
   const [submissions, setSubmissions] = useState<HomeworkSubmission[]>([]);
+  const [showNotifications, setShowNotifications] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -79,10 +81,16 @@ export default function Index() {
             <p className="text-text-muted">У вас {homework.filter(hw => !isCompleted(hw.id)).length} активных заданий</p>
           </div>
           <div className="flex gap-2">
-            <button className="p-3 rounded-xl bg-surface-elevated text-text-muted hover:text-foreground transition-colors">
+            <button 
+              onClick={() => navigate("/search")}
+              className="p-3 rounded-xl bg-surface-elevated text-text-muted hover:text-foreground transition-colors"
+            >
               <Search size={20} />
             </button>
-            <button className="p-3 rounded-xl bg-surface-elevated text-text-muted hover:text-foreground transition-colors">
+            <button 
+              onClick={() => setShowNotifications(true)}
+              className="p-3 rounded-xl bg-surface-elevated text-text-muted hover:text-foreground transition-colors"
+            >
               <Bell size={20} />
             </button>
           </div>
@@ -133,11 +141,18 @@ export default function Index() {
                 description={hw.description}
                 isCompleted={isCompleted(hw.id)}
                 onDetailsClick={() => navigate(`/homework/${hw.id}`)}
+                onExecuteClick={() => navigate(`/homework/${hw.id}`)}
+                homeworkId={hw.id}
               />
             ))
           )}
         </div>
       </div>
+
+      <NotificationPanel 
+        isOpen={showNotifications} 
+        onClose={() => setShowNotifications(false)} 
+      />
     </div>
   );
 }

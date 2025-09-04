@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { NotificationSender } from "@/components/admin/notification-sender";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
@@ -188,19 +189,20 @@ export default function Admin() {
             <p className="text-text-muted">Управление домашними заданиями</p>
           </div>
           
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <CustomButton 
-                onClick={() => {
-                  setEditingHomework(null);
-                  setFormData({ title: "", subject: "", description: "", due_date: "" });
-                }}
-                className="flex items-center gap-2"
-              >
-                <Plus size={20} />
-                Добавить ДЗ
-              </CustomButton>
-            </DialogTrigger>
+          <div className="flex gap-3">
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <CustomButton 
+                  onClick={() => {
+                    setEditingHomework(null);
+                    setFormData({ title: "", subject: "", description: "", due_date: "" });
+                  }}
+                  className="flex items-center gap-2"
+                >
+                  <Plus size={20} />
+                  Добавить ДЗ
+                </CustomButton>
+              </DialogTrigger>
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>
@@ -256,6 +258,9 @@ export default function Admin() {
               </form>
             </DialogContent>
           </Dialog>
+          
+          <NotificationSender />
+          </div>
         </div>
 
         <div className="grid gap-4">

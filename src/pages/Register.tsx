@@ -2,18 +2,22 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, BookOpen } from "lucide-react";
 import { CustomButton } from "@/components/ui/custom-button";
-import { Loader } from "@/components/ui/loader";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
-    name: "",
+    fullName: "",
     email: "",
-    class: "",
-    password: ""
+    password: "",
+    confirmPassword: "",
+    className: ""
   });
   const { signUp } = useAuth();
   const { toast } = useToast();
@@ -21,10 +25,20 @@ export default function Register() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (formData.password !== formData.confirmPassword) {
+      toast({
+        title: "Ошибка",
+        description: "Пароли не совпадают",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsLoading(true);
     
     try {
-      const { error } = await signUp(formData.email, formData.password, formData.name, formData.class);
+      const { error } = await signUp(formData.email, formData.password, formData.fullName, formData.className);
       
       if (error) {
         toast({
@@ -53,7 +67,6 @@ export default function Register() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-8">
       <div className="w-full max-w-md">
-        {/* Logo */}
         <div className="text-center mb-8">
           <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
             <BookOpen size={32} className="text-background" />
@@ -62,65 +75,55 @@ export default function Register() {
           <p className="text-text-muted mt-2">Зарегистрируйтесь для начала</p>
         </div>
 
-        {/* Registration Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-2">Имя</label>
-            <input
+            <Label htmlFor="fullName">Полное имя</Label>
+            <Input
+              id="fullName"
               type="text"
+              value={formData.fullName}
+              onChange={(e) => setFormData({...formData, fullName: e.target.value})}
               required
-              value={formData.name}
-              onChange={(e) => setFormData({...formData, name: e.target.value})}
-              className="w-full px-4 py-3 bg-surface-elevated border border-border rounded-xl 
-                       text-foreground placeholder-text-muted focus:outline-none focus:ring-2 
-                       focus:ring-primary focus:border-transparent"
-              placeholder="Ваше имя"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">Email</label>
-            <input
+            <Label htmlFor="className">Класс</Label>
+            <Select value={formData.className} onValueChange={(value) => setFormData({...formData, className: value})}>
+              <SelectTrigger>
+                <SelectValue placeholder="Выберите класс" />
+              </SelectTrigger>
+              <SelectContent>
+                {Array.from({length: 11}, (_, i) => i + 1).map(num => (
+                  <SelectItem key={num} value={`${num} класс`}>
+                    {num} класс
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
               type="email"
-              required
               value={formData.email}
               onChange={(e) => setFormData({...formData, email: e.target.value})}
-              className="w-full px-4 py-3 bg-surface-elevated border border-border rounded-xl 
-                       text-foreground placeholder-text-muted focus:outline-none focus:ring-2 
-                       focus:ring-primary focus:border-transparent"
-              placeholder="your@email.com"
+              required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">Класс</label>
-            <select
-              required
-              value={formData.class}
-              onChange={(e) => setFormData({...formData, class: e.target.value})}
-              className="w-full px-4 py-3 bg-surface-elevated border border-border rounded-xl 
-                       text-foreground focus:outline-none focus:ring-2 
-                       focus:ring-primary focus:border-transparent"
-            >
-              <option value="">Выберите класс</option>
-              <option value="9">9 класс</option>
-              <option value="10">10 класс</option>
-              <option value="11">11 класс</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-2">Пароль</label>
+            <Label htmlFor="password">Пароль</Label>
             <div className="relative">
-              <input
+              <Input
+                id="password"
                 type={showPassword ? "text" : "password"}
-                required
                 value={formData.password}
                 onChange={(e) => setFormData({...formData, password: e.target.value})}
-                className="w-full px-4 py-3 bg-surface-elevated border border-border rounded-xl 
-                         text-foreground placeholder-text-muted focus:outline-none focus:ring-2 
-                         focus:ring-primary focus:border-transparent pr-12"
-                placeholder="••••••••"
+                required
+                className="pr-12"
               />
               <button
                 type="button"
@@ -132,13 +135,33 @@ export default function Register() {
             </div>
           </div>
 
+          <div>
+            <Label htmlFor="confirmPassword">Подтвердите пароль</Label>
+            <div className="relative">
+              <Input
+                id="confirmPassword"
+                type={showConfirmPassword ? "text" : "password"}
+                value={formData.confirmPassword}
+                onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
+                required
+                className="pr-12"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-muted hover:text-foreground"
+              >
+                {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
+          </div>
 
           <CustomButton 
             type="submit" 
-            className="w-full flex items-center justify-center gap-2"
+            className="w-full"
             disabled={isLoading}
           >
-            {isLoading ? <Loader className="scale-50" /> : "Зарегистрироваться"}
+            {isLoading ? "Регистрация..." : "Зарегистрироваться"}
           </CustomButton>
         </form>
 
