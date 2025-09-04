@@ -1,5 +1,6 @@
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import { CustomButton } from "@/components/ui/custom-button";
 
 const NotFound = () => {
   const location = useLocation();
