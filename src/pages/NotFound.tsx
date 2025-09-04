@@ -1,14 +1,13 @@
-import { useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { CustomButton } from "@/components/ui/custom-button";
-import { Eye, EyeOff, BookOpen } from "lucide-react";
-import { CustomButton } from "@/components/ui/custom-button";
+import { BookOpen } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
-import { useAuth } from "@/hooks/useAuth";
-import { useToast } from "@/hooks/use-toast";
 
 const NotFound = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     console.error(
@@ -16,6 +15,14 @@ const NotFound = () => {
       location.pathname
     );
   }, [location.pathname]);
+
+  const handleHomeClick = () => {
+    setIsLoading(true);
+    // Имитируем небольшой задержку загрузки для UX
+    setTimeout(() => {
+      navigate("/");
+    }, 500);
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
@@ -29,15 +36,17 @@ const NotFound = () => {
           <p className="text-text-muted mt-2">Страница не найдена</p>
         </div>
 
-          <CustomButton 
-            type="submit" 
-            className="w-full flex items-center justify-center gap-2"
-            disabled={isLoading}
-          >
-            {isLoading ? <Loader className="scale-50" /> : "Домой"}
-          </CustomButton>
-        </form>
+        <CustomButton
+          type="button"
+          className="w-full flex items-center justify-center gap-2"
+          disabled={isLoading}
+          onClick={handleHomeClick}
+        >
+          {isLoading ? <Loader className="scale-50" /> : "Домой"}
+        </CustomButton>
+      </div>
     </div>
   );
-  
+};
+
 export default NotFound;
