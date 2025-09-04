@@ -83,7 +83,7 @@ export default function Profile() {
             
             <CustomButton 
               onClick={handleSignOut}
-              className="w-full flex items-center gap-2 text-destructive border border-destructive hover:bg-destructive hover:text-destructive-foreground"
+              className="w-full flex items-center gap-2 border border-border bg-surface-elevated hover:bg-surface"
             >
               <LogOut size={20} />
               Выйти из аккаунта
