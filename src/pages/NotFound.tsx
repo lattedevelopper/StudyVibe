@@ -1,6 +1,11 @@
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { CustomButton } from "@/components/ui/custom-button";
+import { Eye, EyeOff, BookOpen } from "lucide-react";
+import { CustomButton } from "@/components/ui/custom-button";
+import { Loader } from "@/components/ui/loader";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 
 const NotFound = () => {
   const location = useLocation();
