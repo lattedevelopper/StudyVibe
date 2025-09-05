@@ -183,13 +183,13 @@ export default function Admin() {
   return (
     <div className="min-h-screen p-4">
       <div className="max-w-6xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-bold">Админ панель StudyVibe</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold">Админ панель StudyVibe</h1>
             <p className="text-text-muted">Управление домашними заданиями</p>
           </div>
           
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <CustomButton 
@@ -197,7 +197,7 @@ export default function Admin() {
                     setEditingHomework(null);
                     setFormData({ title: "", subject: "", description: "", due_date: "" });
                   }}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 w-full sm:w-auto"
                 >
                   <Plus size={20} />
                   Добавить ДЗ
@@ -266,20 +266,20 @@ export default function Admin() {
         <div className="grid gap-4">
           {homework.map((hw) => (
             <div key={hw.id} className="homework-card">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-sm font-semibold text-primary">{hw.subject}</span>
                   </div>
-                  <h3 className="font-bold text-lg mb-2">{hw.title}</h3>
-                  <p className="text-text-muted text-sm mb-4">{hw.description}</p>
+                  <h3 className="font-bold text-lg mb-2 break-words">{hw.title}</h3>
+                  <p className="text-text-muted text-sm mb-4 break-words">{hw.description}</p>
                   <div className="flex items-center gap-1 text-sm text-text-muted">
                     <Calendar size={14} />
                     <span>{new Date(hw.due_date).toLocaleDateString('ru-RU')}</span>
                   </div>
                 </div>
                 
-                <div className="flex gap-2">
+                <div className="flex gap-2 shrink-0">
                   <button
                     onClick={() => handleEdit(hw)}
                     className="p-2 text-text-muted hover:text-foreground transition-colors"
