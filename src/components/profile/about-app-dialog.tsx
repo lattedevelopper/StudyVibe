@@ -11,7 +11,8 @@ export const AboutAppDialog = () => {
           О приложении
         </CustomButton>
       </DialogTrigger>
-      <DialogContent className="max-w-md max-h-96 overflow-y-auto">
+      <DialogContent className="max-w-md max-h-96 overflow-hidden">
+        <div className="max-h-80 overflow-y-auto pr-2 custom-scrollbar">
         <DialogHeader>
           <DialogTitle>StudyVibe - Инструкция</DialogTitle>
         </DialogHeader>
@@ -72,6 +73,7 @@ export const AboutAppDialog = () => {
               чтобы не пропустить важные сроки!
             </p>
           </div>
+        </div>
         </div>
       </DialogContent>
     </Dialog>

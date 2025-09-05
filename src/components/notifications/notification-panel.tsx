@@ -57,8 +57,11 @@ export const NotificationPanel = ({ isOpen, onClose }: NotificationPanelProps) =
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/50">
-      <div className="absolute right-4 top-20 w-80 max-h-96 bg-surface border border-border rounded-xl shadow-lg overflow-hidden">
+    <div className="fixed inset-0 z-50 bg-black/50" onClick={onClose}>
+      <div 
+        className="absolute right-4 top-20 w-80 max-h-96 bg-background border border-border rounded-xl shadow-xl overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex items-center justify-between p-4 border-b border-border">
           <h3 className="font-semibold">Уведомления</h3>
           <button

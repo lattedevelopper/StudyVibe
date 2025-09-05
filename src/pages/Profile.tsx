@@ -16,41 +16,44 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        top: 0,
-        right: 0,
-        width: "320px",
-        height: "100%",
-        background: "#fff",
-        boxShadow: "-2px 0 16px rgba(0,0,0,0.12)",
-        zIndex: 1000,
-        padding: "28px 24px",
-      }}
-    >
-      <h2 className="text-xl font-bold mb-6">Настройки</h2>
-      <div className="space-y-4">
-        <div>
-          <label className="block text-sm text-gray-500 mb-1">Тема</label>
-          <select className="w-full border rounded px-2 py-1">
-            <option>Светлая</option>
-            <option>Тёмная</option>
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm text-gray-500 mb-1">Уведомления</label>
-          <input type="checkbox" defaultChecked /> Включить уведомления
-        </div>
-        {/* Добавь свои пункты */}
-      </div>
-      <button 
-        className="mt-8 w-full bg-primary text-white py-2 rounded" 
+    <>
+      <div 
+        className="fixed inset-0 z-40 bg-black/50" 
         onClick={onClose}
-      >
-        Закрыть
-      </button>
-    </div>
+      />
+      <div className="fixed top-0 right-0 w-80 h-full bg-background border-l border-border shadow-xl z-50 p-6">
+        <h2 className="text-xl font-bold mb-6">Настройки</h2>
+        <div className="space-y-6">
+          <div>
+            <label className="block text-sm font-medium mb-2">Тема</label>
+            <select className="w-full border border-border rounded-lg px-3 py-2 bg-background">
+              <option>Светлая</option>
+              <option>Тёмная</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-2">Уведомления</label>
+            <div className="flex items-center gap-2">
+              <input type="checkbox" defaultChecked className="rounded" />
+              <span className="text-sm">Включить уведомления</span>
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-2">Язык</label>
+            <select className="w-full border border-border rounded-lg px-3 py-2 bg-background">
+              <option>Русский</option>
+              <option>English</option>
+            </select>
+          </div>
+        </div>
+        <CustomButton 
+          className="mt-8 w-full" 
+          onClick={onClose}
+        >
+          Закрыть
+        </CustomButton>
+      </div>
+    </>
   );
 };
 // ----- конец компонента меню -----
