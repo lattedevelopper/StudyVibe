@@ -125,10 +125,23 @@ All colors MUST be HSL.
     background: hsl(var(--surface-elevated));
     box-shadow: var(--shadow-elevated);
     transition: var(--transition-smooth);
-  }
+}
 
-  .homework-card:hover {
-    @apply border-primary/30;
-    transform: translateY(-2px);
-  }
+/* Custom scrollbar styles */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
 }
