@@ -19,7 +19,9 @@ export type Database = {
           created_at: string
           description: string
           due_date: string
+          files: string[] | null
           id: string
+          solution: string | null
           subject: string
           title: string
           updated_at: string
@@ -28,7 +30,9 @@ export type Database = {
           created_at?: string
           description: string
           due_date: string
+          files?: string[] | null
           id?: string
+          solution?: string | null
           subject: string
           title: string
           updated_at?: string
@@ -37,7 +41,9 @@ export type Database = {
           created_at?: string
           description?: string
           due_date?: string
+          files?: string[] | null
           id?: string
+          solution?: string | null
           subject?: string
           title?: string
           updated_at?: string

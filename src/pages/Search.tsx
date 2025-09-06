@@ -26,6 +26,9 @@ export default function Search() {
   const [isLoading, setIsLoading] = useState(false);
   const [homework, setHomework] = useState<Homework[]>([]);
   const [submissions, setSubmissions] = useState<HomeworkSubmission[]>([]);
+  const [showFilters, setShowFilters] = useState(false);
+  const [filterSubject, setFilterSubject] = useState("");
+  const [filterCompleted, setFilterCompleted] = useState<"all" | "completed" | "pending">("all");
 
   useEffect(() => {
     if (!user) {
@@ -64,10 +67,21 @@ export default function Search() {
     }
   };
 
-  const filteredHomework = homework.filter(hw =>
-    hw.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    hw.subject.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredHomework = homework.filter(hw => {
+    const matchesSearch = hw.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         hw.subject.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    const matchesSubject = !filterSubject || hw.subject === filterSubject;
+    
+    const isHwCompleted = isCompleted(hw.id);
+    const matchesCompleted = filterCompleted === "all" ||
+                           (filterCompleted === "completed" && isHwCompleted) ||
+                           (filterCompleted === "pending" && !isHwCompleted);
+    
+    return matchesSearch && matchesSubject && matchesCompleted;
+  });
+
+  const uniqueSubjects = [...new Set(homework.map(hw => hw.subject))];
 
   const getTimeLeft = (dueDate: string) => {
     const now = new Date();
@@ -104,10 +118,46 @@ export default function Search() {
                      text-foreground placeholder-text-muted focus:outline-none focus:ring-2 
                      focus:ring-primary focus:border-transparent"
           />
-          <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-muted hover:text-foreground">
+          <button 
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-muted hover:text-foreground"
+            onClick={() => setShowFilters(!showFilters)}
+          >
             <Filter size={20} />
           </button>
         </div>
+
+        {showFilters && (
+          <div className="mb-6 p-4 bg-surface-elevated rounded-xl border border-border space-y-4">
+            <h3 className="font-semibold">Фильтры</h3>
+            
+            <div>
+              <label className="block text-sm font-medium mb-2">Предмет</label>
+              <select
+                value={filterSubject}
+                onChange={(e) => setFilterSubject(e.target.value)}
+                className="w-full p-2 bg-background border border-border rounded-lg text-foreground"
+              >
+                <option value="">Все предметы</option>
+                {uniqueSubjects.map(subject => (
+                  <option key={subject} value={subject}>{subject}</option>
+                ))}
+              </select>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-2">Статус выполнения</label>
+              <select
+                value={filterCompleted}
+                onChange={(e) => setFilterCompleted(e.target.value as "all" | "completed" | "pending")}
+                className="w-full p-2 bg-background border border-border rounded-lg text-foreground"
+              >
+                <option value="all">Все задания</option>
+                <option value="completed">Выполненные</option>
+                <option value="pending">Невыполненные</option>
+              </select>
+            </div>
+          </div>
+        )}
 
         {isLoading ? (
           <div className="flex justify-center items-center py-12">

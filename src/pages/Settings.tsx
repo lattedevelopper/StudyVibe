@@ -1,16 +1,19 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Moon, Sun, Bell, Globe, Palette, User, Shield } from "lucide-react";
+import { ArrowLeft, Moon, Sun, Bell, Globe, Palette, User, Shield, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Settings() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { toast } = useToast();
   const [theme, setTheme] = useState("light");
   const [notifications, setNotifications] = useState(true);
   const [language, setLanguage] = useState("ru");
@@ -20,6 +23,31 @@ export default function Settings() {
       navigate("/login");
     }
   }, [user, navigate]);
+
+  const clearNotifications = async () => {
+    if (!user) return;
+    
+    try {
+      const { error } = await supabase
+        .from("notifications")
+        .update({ is_read: true })
+        .eq("user_id", user.id)
+        .eq("is_read", false);
+      
+      if (error) throw error;
+      
+      toast({
+        title: "Успешно",
+        description: "Все уведомления очищены"
+      });
+    } catch (error) {
+      toast({
+        title: "Ошибка",
+        description: "Не удалось очистить уведомления",
+        variant: "destructive"
+      });
+    }
+  };
 
   return (
     <div className="min-h-screen pb-20 px-4 pt-6">
@@ -111,6 +139,17 @@ export default function Settings() {
                 </div>
                 <Switch defaultChecked />
               </div>
+              
+              <Separator />
+              
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                onClick={clearNotifications}
+              >
+                <Trash2 className="w-4 h-4 mr-2" />
+                Очистить уведомления
+              </Button>
             </CardContent>
           </Card>
 

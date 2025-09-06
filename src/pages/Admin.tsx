@@ -17,6 +17,9 @@ interface Homework {
   subject: string;
   description: string;
   due_date: string;
+  ready_assignments?: string[];
+  solution?: string;
+  files?: string[];
 }
 
 export default function Admin() {
@@ -27,8 +30,11 @@ export default function Admin() {
     title: "",
     subject: "",
     description: "",
-    due_date: ""
+    due_date: "",
+    ready_assignments: "",
+    solution: ""
   });
+  const [files, setFiles] = useState<File[]>([]);
   const [passwordDialog, setPasswordDialog] = useState(true);
   const [password, setPassword] = useState("");
   const { toast } = useToast();
@@ -71,14 +77,51 @@ export default function Admin() {
     }
   };
 
+  const uploadFiles = async (homeworkId: string) => {
+    const uploadedFiles = [];
+    
+    for (const file of files) {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${homeworkId}/${Date.now()}.${fileExt}`;
+      
+      const { error } = await supabase.storage
+        .from('homework-files')
+        .upload(fileName, file);
+      
+      if (!error) {
+        uploadedFiles.push(fileName);
+      }
+    }
+    
+    return uploadedFiles;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     try {
+      let homeworkId = editingHomework?.id;
+      let uploadedFiles: string[] = [];
+      
+      const homeworkData = {
+        title: formData.title,
+        subject: formData.subject,
+        description: formData.description,
+        due_date: formData.due_date,
+        ready_assignments: formData.ready_assignments ? [formData.ready_assignments] : [],
+        solution: formData.solution
+      };
+
       if (editingHomework) {
+        // Upload files for existing homework
+        if (files.length > 0) {
+          uploadedFiles = await uploadFiles(editingHomework.id);
+          (homeworkData as any).files = [...(editingHomework.files || []), ...uploadedFiles];
+        }
+        
         const { error } = await supabase
           .from("homework")
-          .update(formData)
+          .update(homeworkData)
           .eq("id", editingHomework.id);
         
         if (error) throw error;
@@ -88,11 +131,23 @@ export default function Admin() {
           description: "Домашнее задание обновлено"
         });
       } else {
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from("homework")
-          .insert([formData]);
+          .insert([homeworkData])
+          .select()
+          .single();
         
         if (error) throw error;
+        homeworkId = data.id;
+        
+        // Upload files for new homework
+        if (files.length > 0) {
+          uploadedFiles = await uploadFiles(homeworkId);
+          await supabase
+            .from("homework")
+            .update({ files: uploadedFiles })
+            .eq("id", homeworkId);
+        }
         
         toast({
           title: "Успешно",
@@ -102,7 +157,8 @@ export default function Admin() {
       
       setIsDialogOpen(false);
       setEditingHomework(null);
-      setFormData({ title: "", subject: "", description: "", due_date: "" });
+      setFormData({ title: "", subject: "", description: "", due_date: "", ready_assignments: "", solution: "" });
+      setFiles([]);
       loadHomework();
     } catch (error) {
       toast({
@@ -119,7 +175,9 @@ export default function Admin() {
       title: hw.title,
       subject: hw.subject,
       description: hw.description,
-      due_date: hw.due_date.split('T')[0]
+      due_date: hw.due_date.split('T')[0],
+      ready_assignments: hw.ready_assignments?.[0] || "",
+      solution: hw.solution || ""
     });
     setIsDialogOpen(true);
   };
@@ -195,7 +253,8 @@ export default function Admin() {
                 <CustomButton 
                   onClick={() => {
                     setEditingHomework(null);
-                    setFormData({ title: "", subject: "", description: "", due_date: "" });
+                    setFormData({ title: "", subject: "", description: "", due_date: "", ready_assignments: "", solution: "" });
+                    setFiles([]);
                   }}
                   className="flex items-center gap-2 w-full sm:w-auto"
                 >
@@ -250,6 +309,43 @@ export default function Admin() {
                     onChange={(e) => setFormData({...formData, due_date: e.target.value})}
                     required
                   />
+                </div>
+                
+                <div>
+                  <Label htmlFor="ready_assignments">Готовые задания</Label>
+                  <Textarea
+                    id="ready_assignments"
+                    placeholder="Введите готовые задания..."
+                    value={formData.ready_assignments}
+                    onChange={(e) => setFormData({...formData, ready_assignments: e.target.value})}
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="solution">Решение</Label>
+                  <Textarea
+                    id="solution"
+                    placeholder="Введите решение задания..."
+                    value={formData.solution}
+                    onChange={(e) => setFormData({...formData, solution: e.target.value})}
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="files">Файлы (фото, PDF)</Label>
+                  <input
+                    id="files"
+                    type="file"
+                    multiple
+                    accept=".jpg,.jpeg,.png,.pdf"
+                    onChange={(e) => setFiles(Array.from(e.target.files || []))}
+                    className="w-full p-2 border border-border rounded-md bg-background text-foreground"
+                  />
+                  {files.length > 0 && (
+                    <div className="text-sm text-text-muted">
+                      Выбрано файлов: {files.length}
+                    </div>
+                  )}
                 </div>
                 
                 <CustomButton type="submit" className="w-full">

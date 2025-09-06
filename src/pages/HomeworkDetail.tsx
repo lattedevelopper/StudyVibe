@@ -11,6 +11,8 @@ interface Homework {
   subject: string;
   description: string;
   due_date: string;
+  solution?: string;
+  files?: string[];
 }
 interface HomeworkSubmission {
   id: string;
@@ -165,6 +167,34 @@ export default function HomeworkDetail() {
               <p className="text-foreground whitespace-pre-wrap">{homework.description}</p>
             </div>
           </div>
+
+          {homework.solution && (
+            <div className="mb-8">
+              <h2 className="text-xl font-semibold mb-3">Решение</h2>
+              <div className="p-4 bg-primary/10 rounded-lg">
+                <p className="text-foreground whitespace-pre-wrap">{homework.solution}</p>
+              </div>
+            </div>
+          )}
+
+          {homework.files && homework.files.length > 0 && (
+            <div className="mb-8">
+              <h2 className="text-xl font-semibold mb-3">Прикрепленные файлы</h2>
+              <div className="space-y-2">
+                {homework.files.map((file, index) => (
+                  <a
+                    key={index}
+                    href={`https://vgshpvvlmttytihdgeoi.supabase.co/storage/v1/object/public/homework-files/${file}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center p-3 bg-surface-elevated border border-border rounded-lg hover:bg-accent transition-colors"
+                  >
+                    <span className="text-sm">{file.split('/').pop()}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="flex gap-4">
             <CustomButton onClick={toggleCompletion} className={`${isCompleted ? 'bg-surface-elevated text-foreground border border-border' : ''}`}>
