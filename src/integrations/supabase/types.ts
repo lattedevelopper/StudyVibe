@@ -21,6 +21,7 @@ export type Database = {
           due_date: string
           files: string[] | null
           id: string
+          ready_assignments: string[] | null
           solution: string | null
           subject: string
           title: string
@@ -32,6 +33,7 @@ export type Database = {
           due_date: string
           files?: string[] | null
           id?: string
+          ready_assignments?: string[] | null
           solution?: string | null
           subject: string
           title: string
@@ -43,6 +45,7 @@ export type Database = {
           due_date?: string
           files?: string[] | null
           id?: string
+          ready_assignments?: string[] | null
           solution?: string | null
           subject?: string
           title?: string
