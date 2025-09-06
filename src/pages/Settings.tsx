@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Moon, Sun, Bell, Globe, Palette, User, Shield } from "lucide-react";
-import { CustomButton } from "@/components/ui/custom-button";
+import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -161,39 +161,39 @@ export default function Settings() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <CustomButton 
+              <Button 
                 variant="outline" 
                 className="w-full justify-start"
                 onClick={() => {/* Add profile edit functionality */}}
               >
                 Редактировать профиль
-              </CustomButton>
+              </Button>
               
-              <CustomButton 
+              <Button 
                 variant="outline" 
                 className="w-full justify-start"
                 onClick={() => {/* Add data export functionality */}}
               >
                 Экспорт данных
-              </CustomButton>
+              </Button>
               
-              <CustomButton 
+              <Button 
                 variant="outline" 
                 className="w-full justify-start text-destructive hover:text-destructive"
                 onClick={() => {/* Add account deletion functionality */}}
               >
                 Удалить аккаунт
-              </CustomButton>
+              </Button>
             </CardContent>
           </Card>
 
           {/* Save Button */}
-          <CustomButton 
+          <Button 
             className="w-full"
             onClick={() => navigate("/profile")}
           >
             Сохранить настройки
-          </CustomButton>
+          </Button>
         </div>
       </div>
     </div>
