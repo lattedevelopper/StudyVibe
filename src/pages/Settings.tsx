@@ -91,20 +91,14 @@ export default function Settings() {
                     {theme === "dark" ? <Moon size={16} /> : <Sun size={16} />}
                   </div>
                   <div>
-                    <p className="font-medium">Тема оформления</p>
-                    <p className="text-sm text-text-muted">Выберите светлую или тёмную тему</p>
+                    <p className="font-medium">Тёмная тема</p>
+                    <p className="text-sm text-text-muted">Переключение между светлой и тёмной темой</p>
                   </div>
                 </div>
-                <Select value={theme} onValueChange={setTheme}>
-                  <SelectTrigger className="w-32">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="light">Светлая</SelectItem>
-                    <SelectItem value="dark">Тёмная</SelectItem>
-                    <SelectItem value="system">Системная</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Switch 
+                  checked={theme === "dark"} 
+                  onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
+                />
               </div>
             </CardContent>
           </Card>

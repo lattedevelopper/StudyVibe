@@ -116,10 +116,7 @@ export default function HomeworkDetail() {
   };
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          
-        </div>
+        <div className="matrix-loader"></div>
       </div>;
   }
   if (!homework) {
