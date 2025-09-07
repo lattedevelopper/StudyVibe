@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { Bell, X } from "lucide-react";
+import { Bell, X, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 
 interface Notification {
   id: string;
@@ -20,6 +21,7 @@ export const NotificationPanel = ({ isOpen, onClose }: NotificationPanelProps) =
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
+  const { toast } = useToast();
 
   useEffect(() => {
     if (isOpen && user) {
@@ -54,6 +56,33 @@ export const NotificationPanel = ({ isOpen, onClose }: NotificationPanelProps) =
     );
   };
 
+  const clearAllNotifications = async () => {
+    if (!user) return;
+    
+    try {
+      const { error } = await supabase
+        .from("notifications")
+        .update({ is_read: true })
+        .eq("user_id", user.id)
+        .eq("is_read", false);
+      
+      if (error) throw error;
+      
+      setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+      
+      toast({
+        title: "Успешно",
+        description: "Все уведомления очищены"
+      });
+    } catch (error) {
+      toast({
+        title: "Ошибка",
+        description: "Не удалось очистить уведомления",
+        variant: "destructive"
+      });
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -64,12 +93,23 @@ export const NotificationPanel = ({ isOpen, onClose }: NotificationPanelProps) =
       >
         <div className="flex items-center justify-between p-4 border-b border-border">
           <h3 className="font-semibold">Уведомления</h3>
-          <button
-            onClick={onClose}
-            className="p-1 rounded-lg hover:bg-surface-elevated transition-colors"
-          >
-            <X size={16} />
-          </button>
+          <div className="flex items-center gap-2">
+            {notifications.some(n => !n.is_read) && (
+              <button
+                onClick={clearAllNotifications}
+                className="p-1 rounded-lg hover:bg-surface-elevated transition-colors text-text-muted hover:text-foreground"
+                title="Очистить все"
+              >
+                <Trash2 size={14} />
+              </button>
+            )}
+            <button
+              onClick={onClose}
+              className="p-1 rounded-lg hover:bg-surface-elevated transition-colors"
+            >
+              <X size={16} />
+            </button>
+          </div>
         </div>
         
         <div className="max-h-80 overflow-y-auto">

@@ -34,7 +34,9 @@ export default function Profile() {
       .eq("user_id", user.id)
       .maybeSingle();
 
-    setProfile(data);
+    if (data) {
+      setProfile(data);
+    }
   };
 
   const handleSignOut = async () => {
@@ -56,10 +58,10 @@ export default function Profile() {
             </div>
             <div className="flex-1">
               <h2 className="text-xl font-bold">
-                {profile?.full_name || user.email || "Пользователь"}
+                {profile?.full_name || "Имя не указано"}
               </h2>
               <p className="text-text-muted">
-                {profile?.class_name || "Класс не указан"}
+                {profile?.class_name ? `Класс ${profile.class_name}` : "Класс не указан"}
               </p>
               <p className="text-sm text-text-muted">{user.email}</p>
             </div>
