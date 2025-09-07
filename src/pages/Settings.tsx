@@ -9,11 +9,14 @@ import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-
 export default function Settings() {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const { toast } = useToast();
+  const {
+    user
+  } = useAuth();
+  const {
+    toast
+  } = useToast();
   const [theme, setTheme] = useState(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('theme') || 'light';
@@ -22,39 +25,31 @@ export default function Settings() {
   });
   const [notifications, setNotifications] = useState(true);
   const [language, setLanguage] = useState("ru");
-
   useEffect(() => {
     if (!user) {
       navigate("/login");
     }
   }, [user, navigate]);
-
   useEffect(() => {
     const root = window.document.documentElement;
     root.classList.remove('light', 'dark');
-    
     if (theme === 'system') {
       const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
       root.classList.add(systemTheme);
     } else {
       root.classList.add(theme);
     }
-    
     localStorage.setItem('theme', theme);
   }, [theme]);
-
   const clearNotifications = async () => {
     if (!user) return;
-    
     try {
-      const { error } = await supabase
-        .from("notifications")
-        .update({ is_read: true })
-        .eq("user_id", user.id)
-        .eq("is_read", false);
-      
+      const {
+        error
+      } = await supabase.from("notifications").update({
+        is_read: true
+      }).eq("user_id", user.id).eq("is_read", false);
       if (error) throw error;
-      
       toast({
         title: "Успешно",
         description: "Все уведомления очищены"
@@ -67,16 +62,11 @@ export default function Settings() {
       });
     }
   };
-
-  return (
-    <div className="min-h-screen pb-20 px-4 pt-6">
+  return <div className="min-h-screen pb-20 px-4 pt-6">
       <div className="max-w-md mx-auto">
         {/* Header */}
         <div className="flex items-center gap-4 mb-6">
-          <button 
-            onClick={() => navigate("/profile")}
-            className="p-2 rounded-lg hover:bg-surface-elevated transition-colors"
-          >
+          <button onClick={() => navigate("/profile")} className="p-2 rounded-lg hover:bg-surface-elevated transition-colors">
             <ArrowLeft size={20} />
           </button>
           <h1 className="text-2xl font-bold">Настройки</h1>
@@ -121,14 +111,8 @@ export default function Settings() {
 
 
           {/* Save Button */}
-          <Button 
-            className="w-full"
-            onClick={() => navigate("/profile")}
-          >
-            Сохранить настройки
-          </Button>
+          
         </div>
       </div>
-    </div>
-  );
+    </div>;
 }
