@@ -103,7 +103,7 @@ export default function Login() {
             className="w-full flex items-center justify-center gap-2"
             disabled={isLoading}
           >
-            {isLoading ? <Loader className="scale-50" /> : "Войти"}
+            {isLoading ? <Loader variant="white" className="scale-50" /> : "Войти"}
           </CustomButton>
         </form>
 

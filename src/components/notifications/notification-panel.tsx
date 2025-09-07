@@ -73,6 +73,9 @@ export const NotificationPanel = ({ isOpen, onClose }: NotificationPanelProps) =
         title: "Успешно",
         description: "Все уведомления удалены"
       });
+      
+      // Refresh notifications to ensure they're gone
+      await loadNotifications();
     } catch (error) {
       console.error("Clear notifications error:", error);
       toast({
