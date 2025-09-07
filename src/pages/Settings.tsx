@@ -14,7 +14,12 @@ export default function Settings() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { toast } = useToast();
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('theme') || 'light';
+    }
+    return 'light';
+  });
   const [notifications, setNotifications] = useState(true);
   const [language, setLanguage] = useState("ru");
 
@@ -23,6 +28,20 @@ export default function Settings() {
       navigate("/login");
     }
   }, [user, navigate]);
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    root.classList.remove('light', 'dark');
+    
+    if (theme === 'system') {
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      root.classList.add(systemTheme);
+    } else {
+      root.classList.add(theme);
+    }
+    
+    localStorage.setItem('theme', theme);
+  }, [theme]);
 
   const clearNotifications = async () => {
     if (!user) return;

@@ -62,22 +62,22 @@ export const NotificationPanel = ({ isOpen, onClose }: NotificationPanelProps) =
     try {
       const { error } = await supabase
         .from("notifications")
-        .update({ is_read: true })
-        .eq("user_id", user.id)
-        .eq("is_read", false);
+        .delete()
+        .eq("user_id", user.id);
       
       if (error) throw error;
       
-      setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+      setNotifications([]);
       
       toast({
         title: "Успешно",
-        description: "Все уведомления очищены"
+        description: "Все уведомления удалены"
       });
     } catch (error) {
+      console.error("Clear notifications error:", error);
       toast({
         title: "Ошибка",
-        description: "Не удалось очистить уведомления",
+        description: "Не удалось удалить уведомления",
         variant: "destructive"
       });
     }
