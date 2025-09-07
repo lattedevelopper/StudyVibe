@@ -67,22 +67,6 @@ export default function Search() {
     }
   };
 
-  const filteredHomework = homework.filter(hw => {
-    const matchesSearch = hw.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         hw.subject.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    const matchesSubject = !filterSubject || hw.subject === filterSubject;
-    
-    const isHwCompleted = isCompleted(hw.id);
-    const matchesCompleted = filterCompleted === "all" ||
-                           (filterCompleted === "completed" && isHwCompleted) ||
-                           (filterCompleted === "pending" && !isHwCompleted);
-    
-    return matchesSearch && matchesSubject && matchesCompleted;
-  });
-
-  const uniqueSubjects = [...new Set(homework.map(hw => hw.subject))];
-
   const getTimeLeft = (dueDate: string) => {
     const now = new Date();
     const due = new Date(dueDate);
@@ -98,6 +82,22 @@ export default function Search() {
   const isCompleted = (homeworkId: string) => {
     return submissions.find(s => s.homework_id === homeworkId)?.is_completed || false;
   };
+
+  const filteredHomework = homework.filter(hw => {
+    const matchesSearch = hw.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         hw.subject.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    const matchesSubject = !filterSubject || hw.subject === filterSubject;
+    
+    const isHwCompleted = isCompleted(hw.id);
+    const matchesCompleted = filterCompleted === "all" ||
+                           (filterCompleted === "completed" && isHwCompleted) ||
+                           (filterCompleted === "pending" && !isHwCompleted);
+    
+    return matchesSearch && matchesSubject && matchesCompleted;
+  });
+
+  const uniqueSubjects = [...new Set(homework.map(hw => hw.subject))];
 
   return (
     <div className="min-h-screen pb-20 px-4 pt-6">
