@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { User, Settings, LogOut, Shield } from "lucide-react";
+import { User, Settings, LogOut, Shield, BarChart3 } from "lucide-react";
 import { CustomButton } from "@/components/ui/custom-button";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -74,6 +74,14 @@ export default function Profile() {
             >
               <Settings size={20} />
               Настройки
+            </CustomButton>
+
+            <CustomButton
+              onClick={() => navigate("/statistics")}
+              className="w-full flex items-center gap-2 border border-border bg-surface-elevated hover:bg-surface"
+            >
+              <BarChart3 size={20} />
+              Статистика
             </CustomButton>
 
             <CustomButton

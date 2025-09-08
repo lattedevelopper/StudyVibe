@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Moon, Sun, Bell, Globe, Palette, User, Shield, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/hooks/useAuth";
@@ -91,20 +90,14 @@ export default function Settings() {
                     {theme === "dark" ? <Moon size={16} /> : <Sun size={16} />}
                   </div>
                   <div>
-                    <p className="font-medium">Тема оформления</p>
-                    
+                    <p className="font-medium">Темная тема</p>
+                    <p className="text-sm text-text-muted">Переключение между светлой и темной темой</p>
                   </div>
                 </div>
-                <Select value={theme} onValueChange={setTheme}>
-                  <SelectTrigger className="w-32">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="light">Светлая</SelectItem>
-                    <SelectItem value="dark">Тёмная</SelectItem>
-                    <SelectItem value="system">Системная</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Switch 
+                  checked={theme === "dark"} 
+                  onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
+                />
               </div>
             </CardContent>
           </Card>
