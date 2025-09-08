@@ -10,7 +10,6 @@ import { NotificationSender } from "@/components/admin/notification-sender";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
-
 interface Homework {
   id: string;
   title: string;
@@ -21,7 +20,6 @@ interface Homework {
   solution?: string;
   files?: string[];
 }
-
 export default function Admin() {
   const [homework, setHomework] = useState<Homework[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -37,16 +35,18 @@ export default function Admin() {
   const [files, setFiles] = useState<File[]>([]);
   const [passwordDialog, setPasswordDialog] = useState(true);
   const [password, setPassword] = useState("");
-  const { toast } = useToast();
-  const { user } = useAuth();
+  const {
+    toast
+  } = useToast();
+  const {
+    user
+  } = useAuth();
   const navigate = useNavigate();
-
   useEffect(() => {
     if (!user) {
       navigate("/login");
     }
   }, [user, navigate]);
-
   const handlePasswordSubmit = () => {
     if (password === "1467") {
       setPasswordDialog(false);
@@ -59,13 +59,13 @@ export default function Admin() {
       });
     }
   };
-
   const loadHomework = async () => {
-    const { data, error } = await supabase
-      .from("homework")
-      .select("*")
-      .order("due_date", { ascending: true });
-
+    const {
+      data,
+      error
+    } = await supabase.from("homework").select("*").order("due_date", {
+      ascending: true
+    });
     if (error) {
       toast({
         title: "Ошибка",
@@ -76,33 +76,25 @@ export default function Admin() {
       setHomework(data || []);
     }
   };
-
   const uploadFiles = async (homeworkId: string) => {
     const uploadedFiles = [];
-    
     for (const file of files) {
       const fileExt = file.name.split('.').pop();
       const fileName = `${homeworkId}/${Date.now()}.${fileExt}`;
-      
-      const { error } = await supabase.storage
-        .from('homework-files')
-        .upload(fileName, file);
-      
+      const {
+        error
+      } = await supabase.storage.from('homework-files').upload(fileName, file);
       if (!error) {
         uploadedFiles.push(fileName);
       }
     }
-    
     return uploadedFiles;
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     try {
       let homeworkId = editingHomework?.id;
       let uploadedFiles: string[] = [];
-      
       const homeworkData = {
         title: formData.title,
         subject: formData.subject,
@@ -111,53 +103,50 @@ export default function Admin() {
         ready_assignments: formData.ready_assignments ? [formData.ready_assignments] : [],
         solution: formData.solution
       };
-
       if (editingHomework) {
         // Upload files for existing homework
         if (files.length > 0) {
           uploadedFiles = await uploadFiles(editingHomework.id);
           (homeworkData as any).files = [...(editingHomework.files || []), ...uploadedFiles];
         }
-        
-        const { error } = await supabase
-          .from("homework")
-          .update(homeworkData)
-          .eq("id", editingHomework.id);
-        
+        const {
+          error
+        } = await supabase.from("homework").update(homeworkData).eq("id", editingHomework.id);
         if (error) throw error;
-        
         toast({
           title: "Успешно",
           description: "Домашнее задание обновлено"
         });
       } else {
-        const { data, error } = await supabase
-          .from("homework")
-          .insert([homeworkData])
-          .select()
-          .single();
-        
+        const {
+          data,
+          error
+        } = await supabase.from("homework").insert([homeworkData]).select().single();
         if (error) throw error;
         homeworkId = data.id;
-        
+
         // Upload files for new homework
         if (files.length > 0) {
           uploadedFiles = await uploadFiles(homeworkId);
-          await supabase
-            .from("homework")
-            .update({ files: uploadedFiles })
-            .eq("id", homeworkId);
+          await supabase.from("homework").update({
+            files: uploadedFiles
+          }).eq("id", homeworkId);
         }
-        
         toast({
           title: "Успешно",
           description: "Домашнее задание добавлено"
         });
       }
-      
       setIsDialogOpen(false);
       setEditingHomework(null);
-      setFormData({ title: "", subject: "", description: "", due_date: "", ready_assignments: "", solution: "" });
+      setFormData({
+        title: "",
+        subject: "",
+        description: "",
+        due_date: "",
+        ready_assignments: "",
+        solution: ""
+      });
       setFiles([]);
       loadHomework();
     } catch (error) {
@@ -168,7 +157,6 @@ export default function Admin() {
       });
     }
   };
-
   const handleEdit = (hw: Homework) => {
     setEditingHomework(hw);
     setFormData({
@@ -181,15 +169,11 @@ export default function Admin() {
     });
     setIsDialogOpen(true);
   };
-
   const handleDelete = async (id: string) => {
     if (!confirm("Вы уверены, что хотите удалить это задание?")) return;
-    
-    const { error } = await supabase
-      .from("homework")
-      .delete()
-      .eq("id", id);
-    
+    const {
+      error
+    } = await supabase.from("homework").delete().eq("id", id);
     if (error) {
       toast({
         title: "Ошибка",
@@ -204,10 +188,8 @@ export default function Admin() {
       loadHomework();
     }
   };
-
   if (passwordDialog) {
-    return (
-      <div className="min-h-screen flex items-center justify-center px-4">
+    return <div className="min-h-screen flex items-center justify-center px-4">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -220,26 +202,16 @@ export default function Admin() {
           <div className="space-y-4">
             <div>
               <Label htmlFor="password">Пароль</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Введите пароль"
-                onKeyDown={(e) => e.key === 'Enter' && handlePasswordSubmit()}
-              />
+              <Input id="password" type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Введите пароль" onKeyDown={e => e.key === 'Enter' && handlePasswordSubmit()} />
             </div>
             <CustomButton onClick={handlePasswordSubmit} className="w-full">
               Войти
             </CustomButton>
           </div>
         </div>
-      </div>
-    );
+      </div>;
   }
-
-  return (
-    <div className="min-h-screen p-4">
+  return <div className="min-h-screen p-4">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
           <div>
@@ -250,14 +222,18 @@ export default function Admin() {
           <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <CustomButton 
-                  onClick={() => {
-                    setEditingHomework(null);
-                    setFormData({ title: "", subject: "", description: "", due_date: "", ready_assignments: "", solution: "" });
-                    setFiles([]);
-                  }}
-                  className="flex items-center gap-2 w-full sm:w-auto"
-                >
+                <CustomButton onClick={() => {
+                setEditingHomework(null);
+                setFormData({
+                  title: "",
+                  subject: "",
+                  description: "",
+                  due_date: "",
+                  ready_assignments: "",
+                  solution: ""
+                });
+                setFiles([]);
+              }} className="flex items-center gap-2 w-full sm:w-auto">
                   <Plus size={20} />
                   Добавить ДЗ
                 </CustomButton>
@@ -272,80 +248,52 @@ export default function Admin() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <Label htmlFor="title">Название</Label>
-                  <Input
-                    id="title"
-                    value={formData.title}
-                    onChange={(e) => setFormData({...formData, title: e.target.value})}
-                    required
-                  />
+                  <Input id="title" value={formData.title} onChange={e => setFormData({
+                    ...formData,
+                    title: e.target.value
+                  })} required />
                 </div>
                 
                 <div>
                   <Label htmlFor="subject">Предмет</Label>
-                  <Input
-                    id="subject"
-                    value={formData.subject}
-                    onChange={(e) => setFormData({...formData, subject: e.target.value})}
-                    required
-                  />
+                  <Input id="subject" value={formData.subject} onChange={e => setFormData({
+                    ...formData,
+                    subject: e.target.value
+                  })} required />
                 </div>
                 
                 <div>
                   <Label htmlFor="description">Описание</Label>
-                  <Textarea
-                    id="description"
-                    value={formData.description}
-                    onChange={(e) => setFormData({...formData, description: e.target.value})}
-                    required
-                  />
+                  <Textarea id="description" value={formData.description} onChange={e => setFormData({
+                    ...formData,
+                    description: e.target.value
+                  })} required />
                 </div>
                 
                 <div>
                   <Label htmlFor="due_date">Дата сдачи</Label>
-                  <Input
-                    id="due_date"
-                    type="date"
-                    value={formData.due_date}
-                    onChange={(e) => setFormData({...formData, due_date: e.target.value})}
-                    required
-                  />
+                  <Input id="due_date" type="date" value={formData.due_date} onChange={e => setFormData({
+                    ...formData,
+                    due_date: e.target.value
+                  })} required />
                 </div>
                 
-                <div>
-                  <Label htmlFor="ready_assignments">Готовые задания</Label>
-                  <Textarea
-                    id="ready_assignments"
-                    placeholder="Введите готовые задания..."
-                    value={formData.ready_assignments}
-                    onChange={(e) => setFormData({...formData, ready_assignments: e.target.value})}
-                  />
-                </div>
+                
                 
                 <div>
                   <Label htmlFor="solution">Решение</Label>
-                  <Textarea
-                    id="solution"
-                    placeholder="Введите решение задания..."
-                    value={formData.solution}
-                    onChange={(e) => setFormData({...formData, solution: e.target.value})}
-                  />
+                  <Textarea id="solution" placeholder="Введите решение задания..." value={formData.solution} onChange={e => setFormData({
+                    ...formData,
+                    solution: e.target.value
+                  })} />
                 </div>
                 
                 <div>
                   <Label htmlFor="files">Файлы (фото, PDF)</Label>
-                  <input
-                    id="files"
-                    type="file"
-                    multiple
-                    accept=".jpg,.jpeg,.png,.pdf"
-                    onChange={(e) => setFiles(Array.from(e.target.files || []))}
-                    className="w-full p-2 border border-border rounded-md bg-background text-foreground"
-                  />
-                  {files.length > 0 && (
-                    <div className="text-sm text-text-muted">
+                  <input id="files" type="file" multiple accept=".jpg,.jpeg,.png,.pdf" onChange={e => setFiles(Array.from(e.target.files || []))} className="w-full p-2 border border-border rounded-md bg-background text-foreground" />
+                  {files.length > 0 && <div className="text-sm text-text-muted">
                       Выбрано файлов: {files.length}
-                    </div>
-                  )}
+                    </div>}
                 </div>
                 
                 <CustomButton type="submit" className="w-full">
@@ -360,8 +308,7 @@ export default function Admin() {
         </div>
 
         <div className="grid gap-4">
-          {homework.map((hw) => (
-            <div key={hw.id} className="homework-card">
+          {homework.map(hw => <div key={hw.id} className="homework-card">
               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-2">
@@ -376,24 +323,16 @@ export default function Admin() {
                 </div>
                 
                 <div className="flex gap-2 shrink-0">
-                  <button
-                    onClick={() => handleEdit(hw)}
-                    className="p-2 text-text-muted hover:text-foreground transition-colors"
-                  >
+                  <button onClick={() => handleEdit(hw)} className="p-2 text-text-muted hover:text-foreground transition-colors">
                     <Edit size={18} />
                   </button>
-                  <button
-                    onClick={() => handleDelete(hw.id)}
-                    className="p-2 text-text-muted hover:text-destructive transition-colors"
-                  >
+                  <button onClick={() => handleDelete(hw.id)} className="p-2 text-text-muted hover:text-destructive transition-colors">
                     <Trash2 size={18} />
                   </button>
                 </div>
               </div>
-            </div>
-          ))}
+            </div>)}
         </div>
       </div>
-    </div>
-  );
+    </div>;
 }
