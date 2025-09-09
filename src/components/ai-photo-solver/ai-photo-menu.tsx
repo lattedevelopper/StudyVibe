@@ -203,11 +203,6 @@ export const AIPhotoMenu = ({ open, onOpenChange }: AIPhotoMenuProps) => {
                     className="absolute bottom-4 left-1/2 -translate-x-1/2"
                     size="lg"
                   >
-                    <Camera className="h-5 w-5 mr-2" />
-                    Сфотографировать
-                  </Button>
-                </div>
-              )}
             </div>
           )}
 
