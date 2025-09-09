@@ -151,7 +151,7 @@ export const AIPhotoMenu = ({ open, onOpenChange }: AIPhotoMenuProps) => {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-primary" />
-            AI Решатель задач
+            AI
           </DialogTitle>
         </DialogHeader>
 
@@ -167,11 +167,7 @@ export const AIPhotoMenu = ({ open, onOpenChange }: AIPhotoMenuProps) => {
                   onClick={startCamera}
                   className="flex flex-col items-center gap-2 h-20"
                   variant="outline"
-                >
-                  <Camera className="h-6 w-6" />
-                  Камера
-                </Button>
-                
+                >                
                 <Button 
                   onClick={() => fileInputRef.current?.click()}
                   className="flex flex-col items-center gap-2 h-20"
