@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-route
 import { BottomNav } from "@/components/navigation/bottom-nav";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { ThemeProvider } from "@/components/theme-provider";
+import { AIButton } from "@/components/ai-photo-solver/ai-button";
 import Index from "./pages/Index";
 import Search from "./pages/Search";
 import Profile from "./pages/Profile";
@@ -82,6 +83,7 @@ const AppContent = () => {
         <Route path="*" element={<NotFound />} />
       </Routes>
       {!hideNavigation && <BottomNav />}
+      {!hideNavigation && <AIButton />}
     </>
   );
 };
