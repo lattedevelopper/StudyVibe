@@ -6,12 +6,12 @@ import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-route
 import { BottomNav } from "@/components/navigation/bottom-nav";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { ThemeProvider } from "@/components/theme-provider";
-import { AIButton } from "@/components/ai-photo-solver/ai-button";
 import Index from "./pages/Index";
 import Search from "./pages/Search";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Statistics from "./pages/Statistics";
+import Journal from "./pages/Journal";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Admin from "./pages/Admin";
@@ -70,6 +70,11 @@ const AppContent = () => {
             <Statistics />
           </ProtectedRoute>
         } />
+        <Route path="/journal" element={
+          <ProtectedRoute>
+            <Journal />
+          </ProtectedRoute>
+        } />
         <Route path="/admin" element={
           <ProtectedRoute>
             <Admin />
@@ -83,7 +88,6 @@ const AppContent = () => {
         <Route path="*" element={<NotFound />} />
       </Routes>
       {!hideNavigation && <BottomNav />}
-      {!hideNavigation && <AIButton />}
     </>
   );
 };

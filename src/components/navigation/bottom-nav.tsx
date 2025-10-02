@@ -1,10 +1,11 @@
-import { Home, Search, User } from "lucide-react";
+import { Home, Search, User, BookOpen } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { icon: Home, label: "Главная", path: "/" },
   { icon: Search, label: "Поиск", path: "/search" },
+  { icon: BookOpen, label: "Журнал", path: "/journal" },
   { icon: User, label: "Профиль", path: "/profile" },
 ];
 

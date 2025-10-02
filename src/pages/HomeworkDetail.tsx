@@ -33,6 +33,9 @@ export default function HomeworkDetail() {
   const [homework, setHomework] = useState<Homework | null>(null);
   const [submission, setSubmission] = useState<HomeworkSubmission | null>(null);
   const [loading, setLoading] = useState(true);
+  const [allHomework, setAllHomework] = useState<Homework[]>([]);
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
   useEffect(() => {
     if (!user) {
       navigate("/login");
@@ -41,8 +44,55 @@ export default function HomeworkDetail() {
     if (id) {
       loadHomework();
       loadSubmission();
+      loadAllHomework();
     }
   }, [id, user, navigate]);
+
+  const loadAllHomework = async () => {
+    const { data } = await supabase
+      .from("homework")
+      .select("*")
+      .order("due_date", { ascending: true });
+    
+    if (data) {
+      setAllHomework(data);
+    }
+  };
+
+  const handleSwipe = () => {
+    const minSwipeDistance = 50;
+    const distance = touchStart - touchEnd;
+    
+    if (Math.abs(distance) < minSwipeDistance) return;
+    
+    const currentIndex = allHomework.findIndex(h => h.id === id);
+    if (currentIndex === -1) return;
+
+    if (distance > 0) {
+      // Swipe up - next homework
+      if (currentIndex < allHomework.length - 1) {
+        navigate(`/homework/${allHomework[currentIndex + 1].id}`);
+      }
+    } else {
+      // Swipe down - previous homework
+      if (currentIndex > 0) {
+        navigate(`/homework/${allHomework[currentIndex - 1].id}`);
+      }
+    }
+  };
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(0);
+    setTouchStart(e.targetTouches[0].clientY);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientY);
+  };
+
+  const onTouchEnd = () => {
+    handleSwipe();
+  };
   const loadHomework = async () => {
     const {
       data,
@@ -130,7 +180,12 @@ export default function HomeworkDetail() {
       </div>;
   }
   const isCompleted = submission?.is_completed || false;
-  return <div className="min-h-screen p-4">
+  return <div 
+      className="min-h-screen p-4"
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+    >
       <div className="max-w-4xl mx-auto">
         <button onClick={() => navigate("/")} className="flex items-center gap-2 text-text-muted hover:text-foreground mb-6 transition-colors">
           <ArrowLeft size={20} />
