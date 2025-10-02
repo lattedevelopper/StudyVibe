@@ -202,6 +202,39 @@ export type Database = {
         }
         Relationships: []
       }
+      schedule: {
+        Row: {
+          created_at: string
+          day_of_week: number
+          id: string
+          lesson_number: number
+          room_number: string
+          subject: string
+          teacher_name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          day_of_week: number
+          id?: string
+          lesson_number: number
+          room_number: string
+          subject: string
+          teacher_name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          day_of_week?: number
+          id?: string
+          lesson_number?: number
+          room_number?: string
+          subject?: string
+          teacher_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

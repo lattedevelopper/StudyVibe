@@ -11,7 +11,7 @@ import Search from "./pages/Search";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Statistics from "./pages/Statistics";
-import Journal from "./pages/Journal";
+import Schedule from "./pages/Schedule";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Admin from "./pages/Admin";
@@ -70,9 +70,9 @@ const AppContent = () => {
             <Statistics />
           </ProtectedRoute>
         } />
-        <Route path="/journal" element={
+        <Route path="/schedule" element={
           <ProtectedRoute>
-            <Journal />
+            <Schedule />
           </ProtectedRoute>
         } />
         <Route path="/admin" element={

@@ -69,12 +69,12 @@ export default function HomeworkDetail() {
     if (currentIndex === -1) return;
 
     if (distance > 0) {
-      // Swipe up - next homework
+      // Swipe left - next homework
       if (currentIndex < allHomework.length - 1) {
         navigate(`/homework/${allHomework[currentIndex + 1].id}`);
       }
     } else {
-      // Swipe down - previous homework
+      // Swipe right - previous homework
       if (currentIndex > 0) {
         navigate(`/homework/${allHomework[currentIndex - 1].id}`);
       }
@@ -83,11 +83,11 @@ export default function HomeworkDetail() {
 
   const onTouchStart = (e: React.TouchEvent) => {
     setTouchEnd(0);
-    setTouchStart(e.targetTouches[0].clientY);
+    setTouchStart(e.targetTouches[0].clientX);
   };
 
   const onTouchMove = (e: React.TouchEvent) => {
-    setTouchEnd(e.targetTouches[0].clientY);
+    setTouchEnd(e.targetTouches[0].clientX);
   };
 
   const onTouchEnd = () => {

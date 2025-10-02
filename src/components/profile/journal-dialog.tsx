@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { Calendar, Plus, Trash2, Check } from "lucide-react";
+import { Calendar, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -21,7 +22,12 @@ interface Todo {
   is_completed: boolean;
 }
 
-export default function Journal() {
+interface JournalDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export function JournalDialog({ open, onOpenChange }: JournalDialogProps) {
   const { user } = useAuth();
   const { toast } = useToast();
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
@@ -31,11 +37,11 @@ export default function Journal() {
   const [newTodo, setNewTodo] = useState("");
 
   useEffect(() => {
-    if (user) {
+    if (user && open) {
       loadEntry();
       loadTodos();
     }
-  }, [selectedDate, user]);
+  }, [selectedDate, user, open]);
 
   const loadEntry = async () => {
     if (!user) return;
@@ -166,11 +172,13 @@ export default function Journal() {
   };
 
   return (
-    <div className="min-h-screen p-4 pb-24">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6">Журнал</h1>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Журнал</DialogTitle>
+        </DialogHeader>
 
-        <div className="mb-6">
+        <div className="mb-4">
           <label className="block text-sm font-medium mb-2">Выберите дату</label>
           <div className="flex items-center gap-2">
             <Calendar className="text-primary" size={20} />
@@ -185,13 +193,13 @@ export default function Journal() {
 
         <div className="space-y-6">
           {/* Notes Section */}
-          <div className="homework-card">
-            <h2 className="text-xl font-semibold mb-4">Заметки</h2>
+          <div>
+            <h3 className="text-lg font-semibold mb-3">Заметки</h3>
             <Textarea
               value={entryContent}
               onChange={(e) => setEntryContent(e.target.value)}
               placeholder="Напишите что-нибудь..."
-              className="min-h-[200px] mb-4"
+              className="min-h-[150px] mb-3"
             />
             <Button onClick={saveEntry}>
               Сохранить заметку
@@ -199,10 +207,10 @@ export default function Journal() {
           </div>
 
           {/* To-Do List Section */}
-          <div className="homework-card">
-            <h2 className="text-xl font-semibold mb-4">Задачи</h2>
+          <div>
+            <h3 className="text-lg font-semibold mb-3">Задачи</h3>
             
-            <div className="flex gap-2 mb-4">
+            <div className="flex gap-2 mb-3">
               <Input
                 value={newTodo}
                 onChange={(e) => setNewTodo(e.target.value)}
@@ -238,14 +246,14 @@ export default function Journal() {
               ))}
 
               {todos.length === 0 && (
-                <p className="text-center text-muted-foreground py-8">
+                <p className="text-center text-muted-foreground py-6">
                   Нет задач на эту дату
                 </p>
               )}
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

@@ -1,9 +1,20 @@
 import { useState, useEffect } from "react";
-import { User, Settings, LogOut, Shield, BarChart3 } from "lucide-react";
+import { User, Settings, LogOut, Shield, BarChart3, BookOpen, Calendar } from "lucide-react";
 import { CustomButton } from "@/components/ui/custom-button";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { JournalDialog } from "@/components/profile/journal-dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 
 interface UserProfile {
@@ -16,6 +27,8 @@ export default function Profile() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [journalOpen, setJournalOpen] = useState(false);
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -40,6 +53,7 @@ export default function Profile() {
   };
 
   const handleSignOut = async () => {
+    setLogoutDialogOpen(false);
     await signOut();
     navigate("/login");
   };
@@ -85,6 +99,22 @@ export default function Profile() {
             </CustomButton>
 
             <CustomButton
+              onClick={() => setJournalOpen(true)}
+              className="w-full flex items-center gap-2 border border-border bg-surface-elevated hover:bg-surface"
+            >
+              <BookOpen size={20} />
+              Журнал
+            </CustomButton>
+
+            <CustomButton
+              onClick={() => navigate("/schedule")}
+              className="w-full flex items-center gap-2 border border-border bg-surface-elevated hover:bg-surface"
+            >
+              <Calendar size={20} />
+              Расписание
+            </CustomButton>
+
+            <CustomButton
               onClick={() => navigate("/admin")}
               className="w-full flex items-center gap-2 border border-border bg-surface-elevated hover:bg-surface"
             >
@@ -93,7 +123,7 @@ export default function Profile() {
             </CustomButton>
 
             <CustomButton
-              onClick={handleSignOut}
+              onClick={() => setLogoutDialogOpen(true)}
               className="w-full flex items-center gap-2 border border-border bg-surface-elevated hover:bg-surface"
             >
               <LogOut size={20} />
@@ -102,6 +132,23 @@ export default function Profile() {
           </div>
         </div>
       </div>
+
+      <JournalDialog open={journalOpen} onOpenChange={setJournalOpen} />
+
+      <AlertDialog open={logoutDialogOpen} onOpenChange={setLogoutDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Выйти из аккаунта?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Вы уверены, что хотите выйти из аккаунта?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Отмена</AlertDialogCancel>
+            <AlertDialogAction onClick={handleSignOut}>Выйти</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
