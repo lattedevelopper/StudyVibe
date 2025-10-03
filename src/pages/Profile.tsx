@@ -4,7 +4,6 @@ import { CustomButton } from "@/components/ui/custom-button";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { JournalDialog } from "@/components/profile/journal-dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -27,7 +26,6 @@ export default function Profile() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [journalOpen, setJournalOpen] = useState(false);
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -99,7 +97,7 @@ export default function Profile() {
             </CustomButton>
 
             <CustomButton
-              onClick={() => setJournalOpen(true)}
+              onClick={() => navigate("/journal")}
               className="w-full flex items-center gap-2 border border-border bg-surface-elevated hover:bg-surface"
             >
               <BookOpen size={20} />
@@ -132,8 +130,6 @@ export default function Profile() {
           </div>
         </div>
       </div>
-
-      <JournalDialog open={journalOpen} onOpenChange={setJournalOpen} />
 
       <AlertDialog open={logoutDialogOpen} onOpenChange={setLogoutDialogOpen}>
         <AlertDialogContent>
