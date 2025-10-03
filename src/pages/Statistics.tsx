@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, TrendingUp, BookOpen, Clock, Target, Award } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowLeft, TrendingUp, BookOpen, Award, Target, CheckCircle2 } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader } from "@/components/ui/loader";
+import { Progress } from "@/components/ui/progress";
 interface SubjectStats {
   subject: string;
   completed: number;
@@ -126,79 +127,102 @@ export default function Statistics() {
         </div>
       </div>;
   }
-  return <div className="min-h-screen pb-20 px-4 pt-6">
-      <div className="max-w-md mx-auto">
-        <div className="flex items-center gap-4 mb-6">
+  return <div className="min-h-screen pb-20 px-4 pt-6 bg-gradient-to-b from-background to-surface">
+      <div className="max-w-2xl mx-auto">
+        <div className="flex items-center gap-4 mb-8">
           <button onClick={() => navigate("/profile")} className="p-2 rounded-lg hover:bg-surface-elevated transition-colors">
-            <ArrowLeft size={20} />
+            <ArrowLeft size={24} />
           </button>
-          <h1 className="text-2xl font-bold">Статистика</h1>
+          <h1 className="text-3xl font-bold">Статистика</h1>
         </div>
 
-        <div className="space-y-4">
-          {/* Overall Stats */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp size={20} />
-                Общая статистика
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">{stats.completedHomeworks}</div>
-                  <div className="text-sm text-text-muted">Выполнено</div>
+        <div className="space-y-6">
+          {/* Overall Stats Card */}
+          <Card className="overflow-hidden border-0 shadow-lg">
+            <div className="bg-gradient-to-r from-primary/20 via-primary/10 to-primary/5 p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
+                  <TrendingUp size={24} className="text-primary" />
                 </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold">{stats.totalHomeworks}</div>
-                  <div className="text-sm text-text-muted">Всего заданий</div>
+                <h2 className="text-2xl font-bold">Общая статистика</h2>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-6 mb-6">
+                <div className="bg-card/50 backdrop-blur-sm rounded-xl p-4 text-center">
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <CheckCircle2 size={20} className="text-primary" />
+                    <div className="text-3xl font-bold text-primary">{stats.completedHomeworks}</div>
+                  </div>
+                  <div className="text-sm text-muted-foreground">Выполнено заданий</div>
+                </div>
+                <div className="bg-card/50 backdrop-blur-sm rounded-xl p-4 text-center">
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <Target size={20} className="text-foreground" />
+                    <div className="text-3xl font-bold">{stats.totalHomeworks}</div>
+                  </div>
+                  <div className="text-sm text-muted-foreground">Всего заданий</div>
                 </div>
               </div>
-              <div className="mt-4 text-center">
-                <div className="text-lg font-semibold">{stats.overallCompletionRate.toFixed(1)}%</div>
-                <div className="text-sm text-text-muted">Процент выполнения</div>
+
+              <div className="bg-card/50 backdrop-blur-sm rounded-xl p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-sm font-medium">Общий прогресс</span>
+                  <span className="text-2xl font-bold text-primary">{stats.overallCompletionRate.toFixed(1)}%</span>
+                </div>
+                <Progress value={stats.overallCompletionRate} className="h-3" />
               </div>
-            </CardContent>
+            </div>
           </Card>
 
           {/* Subject Performance */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BookOpen size={20} />
-                Успеваемость по предметам
+          <Card className="border-0 shadow-lg">
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <BookOpen size={20} className="text-primary" />
+                </div>
+                <span>Успеваемость по предметам</span>
               </CardTitle>
-              <CardDescription>
-                Статистика выполнения заданий по предметам
-              </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                {stats.subjectStats.map((subject, index) => <div key={subject.subject} className="flex items-center justify-between p-3 rounded-lg bg-surface-elevated">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${index === 0 ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' : index === 1 ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' : 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300'}`}>
-                        {index + 1}
+              <div className="space-y-4">
+                {stats.subjectStats.map((subject, index) => (
+                  <div key={subject.subject} className="group">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold transition-all group-hover:scale-110 ${
+                          index === 0 
+                            ? 'bg-gradient-to-br from-yellow-400 to-orange-500 text-white shadow-lg' 
+                            : index === 1 
+                            ? 'bg-gradient-to-br from-gray-300 to-gray-400 text-gray-800 shadow-md' 
+                            : index === 2
+                            ? 'bg-gradient-to-br from-amber-600 to-amber-700 text-white shadow-md'
+                            : 'bg-surface-elevated text-foreground'
+                        }`}>
+                          {index + 1}
+                        </div>
+                        <div>
+                          <div className="font-semibold text-base">{subject.subject}</div>
+                          <div className="text-sm text-muted-foreground">
+                            {subject.completed} из {subject.total} заданий
+                          </div>
+                        </div>
                       </div>
-                      <div>
-                        <div className="font-medium">{subject.subject}</div>
-                        <div className="text-sm text-text-muted">{subject.completed}/{subject.total} заданий</div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xl font-bold text-primary">
+                          {subject.completionRate.toFixed(0)}%
+                        </span>
+                        {index === 0 && subject.completionRate > 80 && (
+                          <Award size={20} className="text-yellow-500 animate-pulse" />
+                        )}
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="font-semibold">{subject.completionRate.toFixed(1)}%</div>
-                      {index === 0 && subject.completionRate > 80 && <Award size={16} className="text-yellow-500 mx-auto mt-1" />}
-                    </div>
-                  </div>)}
+                    <Progress value={subject.completionRate} className="h-2" />
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
-
-          {/* Time Stats */}
-          
-
-          {/* Achievements */}
-          
         </div>
       </div>
     </div>;

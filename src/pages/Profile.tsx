@@ -1,9 +1,12 @@
-import { useState, useEffect } from "react";
-import { User, Settings, LogOut, Shield, BarChart3, BookOpen, Calendar } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { User, Settings, LogOut, Camera, Edit2, Check, X } from "lucide-react";
 import { CustomButton } from "@/components/ui/custom-button";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,19 +17,31 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface UserProfile {
   id: string;
   full_name: string | null;
   class_name: string | null;
+  avatar_url: string | null;
 }
 
 export default function Profile() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [editedName, setEditedName] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!user) {
@@ -47,6 +62,7 @@ export default function Profile() {
 
     if (data) {
       setProfile(data);
+      setEditedName(data.full_name || "");
     }
   };
 
@@ -56,32 +72,217 @@ export default function Profile() {
     navigate("/login");
   };
 
+  const handleNameEdit = () => {
+    setIsEditingName(true);
+  };
+
+  const handleNameSave = async () => {
+    if (!user || !editedName.trim()) return;
+
+    const { error } = await supabase
+      .from("profiles")
+      .update({ full_name: editedName.trim() })
+      .eq("user_id", user.id);
+
+    if (error) {
+      toast({
+        title: "Ошибка",
+        description: "Не удалось обновить имя",
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Успешно",
+        description: "Имя обновлено",
+      });
+      setIsEditingName(false);
+      loadProfile();
+    }
+  };
+
+  const handleNameCancel = () => {
+    setEditedName(profile?.full_name || "");
+    setIsEditingName(false);
+  };
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!user || !event.target.files || event.target.files.length === 0) return;
+
+    const file = event.target.files[0];
+    const fileExt = file.name.split(".").pop();
+    const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+
+    setUploading(true);
+
+    try {
+      // Upload image
+      const { error: uploadError } = await supabase.storage
+        .from("avatars")
+        .upload(fileName, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data: urlData } = supabase.storage
+        .from("avatars")
+        .getPublicUrl(fileName);
+
+      // Update profile
+      const { error: updateError } = await supabase
+        .from("profiles")
+        .update({ avatar_url: urlData.publicUrl })
+        .eq("user_id", user.id);
+
+      if (updateError) throw updateError;
+
+      toast({
+        title: "Успешно",
+        description: "Аватар обновлен",
+      });
+
+      loadProfile();
+    } catch (error) {
+      console.error("Error uploading avatar:", error);
+      toast({
+        title: "Ошибка",
+        description: "Не удалось загрузить аватар",
+        variant: "destructive",
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const getInitials = (name: string | null) => {
+    if (!name) return "?";
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
   if (!user) return null;
 
   return (
-    <div className="min-h-screen pb-20 px-4 pt-6">
-      <div className="max-w-md mx-auto">
-        <h1 className="text-2xl font-bold mb-6">Профиль</h1>
+    <div className="min-h-screen pb-20 px-4 pt-6 bg-gradient-to-b from-background to-surface">
+      <div className="max-w-2xl mx-auto">
+        <h1 className="text-3xl font-bold mb-8 text-center">Профиль</h1>
 
+        {/* Profile Card */}
         <div className="homework-card mb-6">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center">
-              <User size={24} className="text-primary" />
-            </div>
-            <div className="flex-1">
-              <h2 className="text-xl font-bold">
-                {profile?.full_name || "Имя не указано"}
-              </h2>
-              <p className="text-text-muted">
-                {profile?.class_name ? `Класс ${profile.class_name}` : "Класс не указан"}
-              </p>
-              <p className="text-sm text-text-muted">{user.email}</p>
+          {/* Avatar Section */}
+          <div className="flex flex-col items-center mb-6">
+            <div className="relative group">
+              <Avatar className="w-32 h-32 border-4 border-primary/20">
+                <AvatarImage src={profile?.avatar_url || undefined} alt="Avatar" />
+                <AvatarFallback className="text-3xl bg-primary/10 text-primary">
+                  {getInitials(profile?.full_name)}
+                </AvatarFallback>
+              </Avatar>
+              <button
+                onClick={handleAvatarClick}
+                disabled={uploading}
+                className="absolute bottom-0 right-0 w-10 h-10 bg-primary rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-110 active:scale-95 disabled:opacity-50"
+              >
+                <Camera size={20} className="text-primary-foreground" />
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleAvatarUpload}
+                className="hidden"
+              />
             </div>
           </div>
 
-          <div className="space-y-3">
+          {/* Name Section */}
+          <div className="text-center mb-6">
+            {isEditingName ? (
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <Input
+                  value={editedName}
+                  onChange={(e) => setEditedName(e.target.value)}
+                  className="max-w-xs text-center text-xl font-bold"
+                  autoFocus
+                />
+                <button
+                  onClick={handleNameSave}
+                  className="p-2 rounded-lg bg-primary text-primary-foreground hover:opacity-90"
+                >
+                  <Check size={20} />
+                </button>
+                <button
+                  onClick={handleNameCancel}
+                  className="p-2 rounded-lg bg-muted hover:bg-muted/80"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <h2 className="text-2xl font-bold">
+                  {profile?.full_name || "Имя не указано"}
+                </h2>
+                <button
+                  onClick={handleNameEdit}
+                  className="p-2 rounded-lg hover:bg-surface-elevated transition-colors"
+                >
+                  <Edit2 size={18} />
+                </button>
+              </div>
+            )}
+            <p className="text-text-muted">
+              {profile?.class_name ? `Класс ${profile.class_name}` : "Класс не указан"}
+            </p>
+            <p className="text-sm text-text-muted mt-1">{user.email}</p>
+          </div>
+
+          {/* Quick Actions */}
+          <div className="grid grid-cols-2 gap-3 mb-4">
             <CustomButton
-              className="w-full flex items-center gap-2 border border-border bg-surface-elevated hover:bg-surface"
+              onClick={() => navigate("/statistics")}
+              className="flex flex-col items-center gap-2 py-6"
+            >
+              <div className="text-2xl">📊</div>
+              <span className="text-sm">Статистика</span>
+            </CustomButton>
+
+            <CustomButton
+              onClick={() => navigate("/journal")}
+              className="flex flex-col items-center gap-2 py-6"
+            >
+              <div className="text-2xl">📖</div>
+              <span className="text-sm">Журнал</span>
+            </CustomButton>
+
+            <CustomButton
+              onClick={() => navigate("/schedule")}
+              className="flex flex-col items-center gap-2 py-6"
+            >
+              <div className="text-2xl">📅</div>
+              <span className="text-sm">Расписание</span>
+            </CustomButton>
+
+            <CustomButton
+              onClick={() => navigate("/admin")}
+              className="flex flex-col items-center gap-2 py-6"
+            >
+              <div className="text-2xl">🛡️</div>
+              <span className="text-sm">Админ</span>
+            </CustomButton>
+          </div>
+
+          {/* Settings & Logout */}
+          <div className="space-y-3 pt-4 border-t border-border">
+            <CustomButton
+              className="w-full flex items-center gap-2 justify-center"
               onClick={() => navigate("/settings")}
             >
               <Settings size={20} />
@@ -89,40 +290,8 @@ export default function Profile() {
             </CustomButton>
 
             <CustomButton
-              onClick={() => navigate("/statistics")}
-              className="w-full flex items-center gap-2 border border-border bg-surface-elevated hover:bg-surface"
-            >
-              <BarChart3 size={20} />
-              Статистика
-            </CustomButton>
-
-            <CustomButton
-              onClick={() => navigate("/journal")}
-              className="w-full flex items-center gap-2 border border-border bg-surface-elevated hover:bg-surface"
-            >
-              <BookOpen size={20} />
-              Журнал
-            </CustomButton>
-
-            <CustomButton
-              onClick={() => navigate("/schedule")}
-              className="w-full flex items-center gap-2 border border-border bg-surface-elevated hover:bg-surface"
-            >
-              <Calendar size={20} />
-              Расписание
-            </CustomButton>
-
-            <CustomButton
-              onClick={() => navigate("/admin")}
-              className="w-full flex items-center gap-2 border border-border bg-surface-elevated hover:bg-surface"
-            >
-              <Shield size={20} />
-              Админ панель
-            </CustomButton>
-
-            <CustomButton
               onClick={() => setLogoutDialogOpen(true)}
-              className="w-full flex items-center gap-2 border border-border bg-surface-elevated hover:bg-surface"
+              className="w-full flex items-center gap-2 justify-center border-destructive/50 hover:bg-destructive/10"
             >
               <LogOut size={20} />
               Выйти из аккаунта
