@@ -9,7 +9,7 @@ All colors MUST be HSL.
 @layer base {
   :root {
     /* Light theme */
-    --background: 0 0% 98%;
+    --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
 
     --card: 0 0% 100%;
@@ -19,7 +19,7 @@ All colors MUST be HSL.
     --popover-foreground: 240 10% 3.9%;
 
     --primary: 133 82% 56%;
-    --primary-foreground: 0 0% 100%;
+    --primary-foreground: 0 0% 98%;
 
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
@@ -33,64 +33,58 @@ All colors MUST be HSL.
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 240 5.9% 92%;
-    --input: 240 5.9% 95%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
     --ring: 133 82% 56%;
 
-    --radius: 1rem;
+    --radius: 0.75rem;
 
     /* Custom design system tokens */
-    --primary-glow: 133 82% 70%;
-    --surface-elevated: 0 0% 100%;
+    --primary-glow: 133 82% 65%;
+    --surface-elevated: 240 4.8% 95.9%;
     --text-muted: 240 3.8% 46.1%;
-    --gradient-primary: linear-gradient(135deg, hsl(133 82% 56%), hsl(133 82% 70%));
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(240 4.8% 98%));
-    --shadow-sm: 0 2px 8px -2px hsl(0 0% 0% / 0.08);
-    --shadow-md: 0 4px 16px -4px hsl(0 0% 0% / 0.1);
-    --shadow-elevated: 0 8px 24px -6px hsl(0 0% 0% / 0.12);
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --gradient-primary: linear-gradient(135deg, hsl(133 82% 56%), hsl(133 82% 65%));
+    --shadow-elevated: 0 10px 25px -5px hsl(0 0% 0% / 0.1);
+    --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .dark {
     /* Dark theme */
-    --background: 222 47% 11%;
-    --foreground: 0 0% 95%;
+    --background: 206 6% 12%;
+    --foreground: 0 0% 91%;
 
-    --card: 222 47% 14%;
-    --card-foreground: 0 0% 95%;
+    --card: 210 6% 15%;
+    --card-foreground: 0 0% 91%;
 
-    --popover: 222 47% 14%;
-    --popover-foreground: 0 0% 95%;
+    --popover: 210 6% 15%;
+    --popover-foreground: 0 0% 91%;
 
     --primary: 133 82% 56%;
-    --primary-foreground: 222 47% 11%;
+    --primary-foreground: 206 6% 12%;
 
-    --secondary: 222 47% 18%;
-    --secondary-foreground: 0 0% 95%;
+    --secondary: 210 6% 21%;
+    --secondary-foreground: 0 0% 91%;
 
-    --muted: 222 47% 16%;
-    --muted-foreground: 0 0% 70%;
+    --muted: 210 6% 18%;
+    --muted-foreground: 0 0% 65%;
 
     --accent: 133 82% 56%;
-    --accent-foreground: 222 47% 11%;
+    --accent-foreground: 206 6% 12%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 222 47% 20%;
-    --input: 222 47% 16%;
+    --border: 210 6% 18%;
+    --input: 210 6% 15%;
     --ring: 133 82% 56%;
 
     /* Custom design system tokens */
-    --primary-glow: 133 82% 70%;
-    --surface-elevated: 222 47% 16%;
-    --text-muted: 0 0% 70%;
-    --gradient-primary: linear-gradient(135deg, hsl(133 82% 56%), hsl(133 82% 70%));
-    --gradient-card: linear-gradient(145deg, hsl(222 47% 14%), hsl(222 47% 16%));
-    --shadow-sm: 0 2px 8px -2px hsl(0 0% 0% / 0.3);
-    --shadow-md: 0 4px 16px -4px hsl(0 0% 0% / 0.4);
-    --shadow-elevated: 0 8px 24px -6px hsl(0 0% 0% / 0.5);
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --primary-glow: 133 82% 65%;
+    --surface-elevated: 210 6% 18%;
+    --text-muted: 0 0% 65%;
+    --gradient-primary: linear-gradient(135deg, hsl(133 82% 56%), hsl(133 82% 65%));
+    --shadow-elevated: 0 10px 25px -5px hsl(0 0% 0% / 0.3);
+    --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 
@@ -142,32 +136,26 @@ All colors MUST be HSL.
     }
   }
 
-  /* Custom Button */
+  /* Custom Button Animations */
   .custom-button {
-    @apply px-6 py-3.5 border-0 rounded-2xl text-foreground relative font-semibold text-base overflow-hidden;
-    background: hsl(var(--surface-elevated));
-    box-shadow: var(--shadow-sm);
+    @apply px-6 py-4 border-0 rounded-xl text-foreground relative font-bold text-base overflow-hidden;
+    background: hsl(var(--secondary));
+    box-shadow: 4px 8px 19px -3px hsl(0 0% 0% / 0.27);
     transition: var(--transition-smooth);
     z-index: 1;
-    border: 1px solid hsl(var(--border));
   }
 
   .custom-button::before {
     content: "";
-    @apply absolute top-0 left-0 h-full w-0 rounded-2xl;
-    background: var(--gradient-primary);
+    @apply absolute top-0 left-0 h-full w-0 rounded-xl;
+    background-color: hsl(var(--primary));
     z-index: -1;
+    box-shadow: 4px 8px 19px -3px hsl(133 82% 56% / 0.27);
     transition: var(--transition-smooth);
   }
 
   .custom-button:hover {
-    @apply text-primary-foreground border-transparent;
-    box-shadow: var(--shadow-md);
-    transform: translateY(-1px);
-  }
-
-  .custom-button:active {
-    transform: translateY(0);
+    @apply text-background;
   }
 
   .custom-button:hover::before {
@@ -176,29 +164,18 @@ All colors MUST be HSL.
 
   /* Bottom Navigation */
   .bottom-nav {
-    @apply fixed bottom-0 left-0 right-0 z-50 mx-auto;
-    max-width: 100%;
-    background: hsl(var(--card) / 0.8);
-    border-top: 1px solid hsl(var(--border) / 0.5);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    @apply fixed bottom-0 left-0 right-0 z-50;
+    background: hsl(var(--card));
+    border-top: 1px solid hsl(var(--border));
+    backdrop-filter: blur(10px);
   }
 
   /* Homework Card */
   .homework-card {
-    @apply p-5 rounded-2xl border border-border;
-    background: var(--gradient-card);
-    box-shadow: var(--shadow-sm);
+    @apply p-4 rounded-xl border border-border;
+    background: hsl(var(--surface-elevated));
+    box-shadow: var(--shadow-elevated);
     transition: var(--transition-smooth);
-  }
-
-  .homework-card:hover {
-    box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
-  }
-
-  .homework-card:active {
-    transform: translateY(0);
   }
 }
 

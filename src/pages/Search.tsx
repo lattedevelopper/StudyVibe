@@ -100,28 +100,26 @@ export default function Search() {
   const uniqueSubjects = [...new Set(homework.map(hw => hw.subject))];
 
   return (
-    <div className="min-h-screen pb-20 px-4 pt-8 bg-background">
+    <div className="min-h-screen pb-20 px-4 pt-6">
       <div className="max-w-md mx-auto">
-        <h1 className="text-3xl font-bold mb-6 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-          Поиск заданий
-        </h1>
+        <h1 className="text-2xl font-bold mb-6">Поиск заданий</h1>
         
         <div className="relative mb-6">
           <SearchIcon 
             size={20} 
-            className="absolute left-4 top-1/2 transform -translate-y-1/2 text-text-muted"
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-muted"
           />
           <input
             type="text"
             placeholder="Поиск по предмету или названию..."
             value={searchQuery}
             onChange={(e) => handleSearch(e.target.value)}
-            className="w-full pl-12 pr-12 py-4 bg-surface-elevated border border-border rounded-2xl 
+            className="w-full pl-10 pr-4 py-3 bg-surface-elevated border border-border rounded-xl 
                      text-foreground placeholder-text-muted focus:outline-none focus:ring-2 
-                     focus:ring-primary focus:border-transparent shadow-sm transition-all"
+                     focus:ring-primary focus:border-transparent"
           />
           <button 
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-text-muted hover:text-foreground transition-all active:scale-95"
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-muted hover:text-foreground"
             onClick={() => setShowFilters(!showFilters)}
           >
             <Filter size={20} />
@@ -129,15 +127,15 @@ export default function Search() {
         </div>
 
         {showFilters && (
-          <div className="mb-6 p-5 bg-surface-elevated rounded-2xl border border-border space-y-4 shadow-sm">
-            <h3 className="font-bold text-lg">Фильтры</h3>
+          <div className="mb-6 p-4 bg-surface-elevated rounded-xl border border-border space-y-4">
+            <h3 className="font-semibold">Фильтры</h3>
             
             <div>
-              <label className="block text-sm font-semibold mb-2">Предмет</label>
+              <label className="block text-sm font-medium mb-2">Предмет</label>
               <select
                 value={filterSubject}
                 onChange={(e) => setFilterSubject(e.target.value)}
-                className="w-full p-3 bg-background border border-border rounded-xl text-foreground focus:ring-2 focus:ring-primary transition-all"
+                className="w-full p-2 bg-background border border-border rounded-lg text-foreground"
               >
                 <option value="">Все предметы</option>
                 {uniqueSubjects.map(subject => (
@@ -147,11 +145,11 @@ export default function Search() {
             </div>
             
             <div>
-              <label className="block text-sm font-semibold mb-2">Статус выполнения</label>
+              <label className="block text-sm font-medium mb-2">Статус выполнения</label>
               <select
                 value={filterCompleted}
                 onChange={(e) => setFilterCompleted(e.target.value as "all" | "completed" | "pending")}
-                className="w-full p-3 bg-background border border-border rounded-xl text-foreground focus:ring-2 focus:ring-primary transition-all"
+                className="w-full p-2 bg-background border border-border rounded-lg text-foreground"
               >
                 <option value="all">Все задания</option>
                 <option value="completed">Выполненные</option>
@@ -162,11 +160,11 @@ export default function Search() {
         )}
 
         {isLoading ? (
-          <div className="flex justify-center items-center py-16">
+          <div className="flex justify-center items-center py-12">
             <Loader />
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {searchQuery ? (
               filteredHomework.length > 0 ? (
                 filteredHomework.map((hw) => (
@@ -183,20 +181,14 @@ export default function Search() {
                   />
                 ))
               ) : (
-                <div className="homework-card text-center py-16">
-                  <div className="w-16 h-16 bg-muted rounded-3xl flex items-center justify-center mx-auto mb-4">
-                    <SearchIcon size={32} className="text-muted-foreground" />
-                  </div>
-                  <p className="text-text-muted font-medium">Ничего не найдено</p>
+                <div className="text-center py-12">
+                  <p className="text-text-muted">Ничего не найдено</p>
                 </div>
               )
             ) : (
-              <div className="homework-card text-center py-16">
-                <div className="w-16 h-16 bg-primary/10 rounded-3xl flex items-center justify-center mx-auto mb-4">
-                  <SearchIcon size={32} className="text-primary" />
-                </div>
-                <h3 className="text-lg font-semibold mb-2">Начните поиск</h3>
-                <p className="text-text-muted text-sm">Введите запрос для поиска заданий</p>
+              <div className="text-center py-12">
+                <SearchIcon size={48} className="mx-auto text-text-muted mb-4" />
+                <p className="text-text-muted">Введите запрос для поиска</p>
               </div>
             )}
           </div>

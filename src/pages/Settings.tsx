@@ -61,40 +61,36 @@ export default function Settings() {
       });
     }
   };
-  return <div className="min-h-screen pb-20 px-4 pt-8 bg-background">
+  return <div className="min-h-screen pb-20 px-4 pt-6">
       <div className="max-w-md mx-auto">
         {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <button onClick={() => navigate("/profile")} className="p-2.5 rounded-2xl hover:bg-surface-elevated transition-all active:scale-95">
-            <ArrowLeft size={22} />
+        <div className="flex items-center gap-4 mb-6">
+          <button onClick={() => navigate("/profile")} className="p-2 rounded-lg hover:bg-surface-elevated transition-colors">
+            <ArrowLeft size={20} />
           </button>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-            Настройки
-          </h1>
+          <h1 className="text-2xl font-bold">Настройки</h1>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-6">
           {/* Appearance Section */}
-          <div className="homework-card">
-            <div className="mb-6">
-              <h2 className="flex items-center gap-2 text-xl font-bold mb-1">
-                <div className="w-8 h-8 bg-primary/10 rounded-xl flex items-center justify-center">
-                  <Palette size={18} className="text-primary" />
-                </div>
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Palette size={20} />
                 Внешний вид
-              </h2>
-              <p className="text-sm text-text-muted ml-10">
+              </CardTitle>
+              <CardDescription>
                 Настройте тему и оформление приложения
-              </p>
-            </div>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 rounded-2xl bg-background/50 border border-border">
-                <div className="flex items-center gap-3">
-                  <div className="p-2.5 rounded-xl bg-primary/10">
-                    {theme === "dark" ? <Moon size={20} className="text-primary" /> : <Sun size={20} className="text-primary" />}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="p-2 rounded-lg bg-surface-elevated">
+                    {theme === "dark" ? <Moon size={16} /> : <Sun size={16} />}
                   </div>
                   <div>
-                    <p className="font-semibold">Темная тема</p>
+                    <p className="font-medium">Темная тема</p>
                     <p className="text-sm text-text-muted">Переключение между светлой и темной темой</p>
                   </div>
                 </div>
@@ -103,8 +99,12 @@ export default function Settings() {
                   onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
                 />
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
+
+
+          {/* Save Button */}
+          
         </div>
       </div>
     </div>;

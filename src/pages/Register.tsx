@@ -65,16 +65,14 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-8 bg-background">
+    <div className="min-h-screen flex items-center justify-center px-4 py-8">
       <div className="w-full max-w-md">
-        <div className="text-center mb-10">
-          <div className="w-20 h-20 bg-gradient-to-br from-primary to-primary-glow rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg">
-            <BookOpen size={40} className="text-primary-foreground" />
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <BookOpen size={32} className="text-background" />
           </div>
-          <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-            Создать аккаунт
-          </h1>
-          <p className="text-text-muted">Зарегистрируйтесь в StudyVibe</p>
+          <h1 className="text-2xl font-bold">Создать аккаунт StudyVibe</h1>
+          <p className="text-text-muted mt-2">Зарегистрируйтесь для начала</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
