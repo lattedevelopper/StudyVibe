@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { User, Settings, LogOut, Camera, Edit2, Check, X } from "lucide-react";
+import { Settings, LogOut, Camera, Edit2, Check, X, BarChart3, Calendar, BookOpen, Shield } from "lucide-react";
 import { CustomButton } from "@/components/ui/custom-button";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -41,6 +42,7 @@ export default function Profile() {
   const [isEditingName, setIsEditingName] = useState(false);
   const [editedName, setEditedName] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -54,6 +56,7 @@ export default function Profile() {
   const loadProfile = async () => {
     if (!user) return;
 
+    setLoading(true);
     const { data } = await supabase
       .from("profiles")
       .select("*")
@@ -64,6 +67,7 @@ export default function Profile() {
       setProfile(data);
       setEditedName(data.full_name || "");
     }
+    setLoading(false);
   };
 
   const handleSignOut = async () => {
@@ -174,8 +178,25 @@ export default function Profile() {
       <div className="max-w-2xl mx-auto">
         <h1 className="text-3xl font-bold mb-8 text-center">Профиль</h1>
 
-        {/* Profile Card */}
-        <div className="homework-card mb-6">
+        {loading ? (
+          <div className="homework-card mb-6 space-y-6">
+            <div className="flex flex-col items-center mb-6">
+              <Skeleton className="w-32 h-32 rounded-full" />
+            </div>
+            <div className="text-center space-y-2">
+              <Skeleton className="h-8 w-48 mx-auto" />
+              <Skeleton className="h-4 w-32 mx-auto" />
+              <Skeleton className="h-4 w-40 mx-auto" />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <Skeleton className="h-24" />
+              <Skeleton className="h-24" />
+              <Skeleton className="h-24" />
+              <Skeleton className="h-24" />
+            </div>
+          </div>
+        ) : (
+          <div className="homework-card mb-6">
           {/* Avatar Section */}
           <div className="flex flex-col items-center mb-6">
             <div className="relative group">
@@ -250,7 +271,7 @@ export default function Profile() {
               onClick={() => navigate("/statistics")}
               className="flex flex-col items-center gap-2 py-6"
             >
-              <div className="text-2xl">📊</div>
+              <BarChart3 size={24} className="text-primary" />
               <span className="text-sm">Статистика</span>
             </CustomButton>
 
@@ -258,7 +279,7 @@ export default function Profile() {
               onClick={() => navigate("/journal")}
               className="flex flex-col items-center gap-2 py-6"
             >
-              <div className="text-2xl">📖</div>
+              <BookOpen size={24} className="text-primary" />
               <span className="text-sm">Журнал</span>
             </CustomButton>
 
@@ -266,7 +287,7 @@ export default function Profile() {
               onClick={() => navigate("/schedule")}
               className="flex flex-col items-center gap-2 py-6"
             >
-              <div className="text-2xl">📅</div>
+              <Calendar size={24} className="text-primary" />
               <span className="text-sm">Расписание</span>
             </CustomButton>
 
@@ -274,7 +295,7 @@ export default function Profile() {
               onClick={() => navigate("/admin")}
               className="flex flex-col items-center gap-2 py-6"
             >
-              <div className="text-2xl">🛡️</div>
+              <Shield size={24} className="text-primary" />
               <span className="text-sm">Админ</span>
             </CustomButton>
           </div>
@@ -298,6 +319,7 @@ export default function Profile() {
             </CustomButton>
           </div>
         </div>
+        )}
       </div>
 
       <AlertDialog open={logoutDialogOpen} onOpenChange={setLogoutDialogOpen}>
