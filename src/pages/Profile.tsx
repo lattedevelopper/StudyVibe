@@ -170,27 +170,29 @@ export default function Profile() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen pb-20 px-4 pt-6 bg-gradient-to-b from-background to-surface">
+    <div className="min-h-screen pb-20 px-4 pt-8 bg-background">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8 text-center">Профиль</h1>
+        <h1 className="text-3xl font-bold mb-8 text-center bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+          Профиль
+        </h1>
 
         {/* Profile Card */}
         <div className="homework-card mb-6">
           {/* Avatar Section */}
-          <div className="flex flex-col items-center mb-6">
+          <div className="flex flex-col items-center mb-8">
             <div className="relative group">
-              <Avatar className="w-32 h-32 border-4 border-primary/20">
+              <Avatar className="w-28 h-28 border-4 border-primary/20 shadow-md">
                 <AvatarImage src={profile?.avatar_url || undefined} alt="Avatar" />
-                <AvatarFallback className="text-3xl bg-primary/10 text-primary">
+                <AvatarFallback className="text-3xl bg-primary/10 text-primary font-bold">
                   {getInitials(profile?.full_name)}
                 </AvatarFallback>
               </Avatar>
               <button
                 onClick={handleAvatarClick}
                 disabled={uploading}
-                className="absolute bottom-0 right-0 w-10 h-10 bg-primary rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-110 active:scale-95 disabled:opacity-50"
+                className="absolute bottom-0 right-0 w-11 h-11 bg-primary rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110 active:scale-95 disabled:opacity-50 border-4 border-background"
               >
-                <Camera size={20} className="text-primary-foreground" />
+                <Camera size={18} className="text-primary-foreground" />
               </button>
               <input
                 ref={fileInputRef}
@@ -203,98 +205,90 @@ export default function Profile() {
           </div>
 
           {/* Name Section */}
-          <div className="text-center mb-6">
+          <div className="text-center mb-8">
             {isEditingName ? (
-              <div className="flex items-center justify-center gap-2 mb-2">
+              <div className="flex items-center justify-center gap-2 mb-3">
                 <Input
                   value={editedName}
                   onChange={(e) => setEditedName(e.target.value)}
-                  className="max-w-xs text-center text-xl font-bold"
+                  className="max-w-xs text-center text-xl font-bold border-2"
                   autoFocus
                 />
                 <button
                   onClick={handleNameSave}
-                  className="p-2 rounded-lg bg-primary text-primary-foreground hover:opacity-90"
+                  className="p-2.5 rounded-xl bg-primary text-primary-foreground hover:opacity-90 transition-all active:scale-95 shadow-sm"
                 >
                   <Check size={20} />
                 </button>
                 <button
                   onClick={handleNameCancel}
-                  className="p-2 rounded-lg bg-muted hover:bg-muted/80"
+                  className="p-2.5 rounded-xl bg-muted hover:bg-muted/80 transition-all active:scale-95 shadow-sm"
                 >
                   <X size={20} />
                 </button>
               </div>
             ) : (
-              <div className="flex items-center justify-center gap-2 mb-2">
+              <div className="flex items-center justify-center gap-2 mb-3">
                 <h2 className="text-2xl font-bold">
                   {profile?.full_name || "Имя не указано"}
                 </h2>
                 <button
                   onClick={handleNameEdit}
-                  className="p-2 rounded-lg hover:bg-surface-elevated transition-colors"
+                  className="p-2 rounded-xl hover:bg-surface-elevated transition-all active:scale-95"
                 >
-                  <Edit2 size={18} />
+                  <Edit2 size={18} className="text-muted-foreground" />
                 </button>
               </div>
             )}
-            <p className="text-text-muted">
+            <p className="text-text-muted font-medium">
               {profile?.class_name ? `Класс ${profile.class_name}` : "Класс не указан"}
             </p>
-            <p className="text-sm text-text-muted mt-1">{user.email}</p>
+            <p className="text-sm text-text-muted mt-1.5">{user.email}</p>
           </div>
 
           {/* Quick Actions */}
-          <div className="grid grid-cols-2 gap-3 mb-4">
+          <div className="grid grid-cols-2 gap-3 mb-6">
             <CustomButton
               onClick={() => navigate("/statistics")}
-              className="flex flex-col items-center gap-2 py-6"
+              className="flex flex-col items-center gap-3 py-7"
             >
-              <div className="text-2xl">📊</div>
-              <span className="text-sm">Статистика</span>
+              <div className="text-3xl">📊</div>
+              <span className="text-sm font-semibold">Статистика</span>
             </CustomButton>
 
             <CustomButton
               onClick={() => navigate("/journal")}
-              className="flex flex-col items-center gap-2 py-6"
+              className="flex flex-col items-center gap-3 py-7"
             >
-              <div className="text-2xl">📖</div>
-              <span className="text-sm">Журнал</span>
+              <div className="text-3xl">📖</div>
+              <span className="text-sm font-semibold">Журнал</span>
             </CustomButton>
 
             <CustomButton
               onClick={() => navigate("/schedule")}
-              className="flex flex-col items-center gap-2 py-6"
+              className="flex flex-col items-center gap-3 py-7"
             >
-              <div className="text-2xl">📅</div>
-              <span className="text-sm">Расписание</span>
+              <div className="text-3xl">📅</div>
+              <span className="text-sm font-semibold">Расписание</span>
             </CustomButton>
 
             <CustomButton
-              onClick={() => navigate("/admin")}
-              className="flex flex-col items-center gap-2 py-6"
+              onClick={() => navigate("/settings")}
+              className="flex flex-col items-center gap-3 py-7"
             >
-              <div className="text-2xl">🛡️</div>
-              <span className="text-sm">Админ</span>
+              <div className="text-3xl">⚙️</div>
+              <span className="text-sm font-semibold">Настройки</span>
             </CustomButton>
           </div>
 
-          {/* Settings & Logout */}
-          <div className="space-y-3 pt-4 border-t border-border">
-            <CustomButton
-              className="w-full flex items-center gap-2 justify-center"
-              onClick={() => navigate("/settings")}
-            >
-              <Settings size={20} />
-              Настройки
-            </CustomButton>
-
+          {/* Logout */}
+          <div className="pt-4 border-t border-border">
             <CustomButton
               onClick={() => setLogoutDialogOpen(true)}
-              className="w-full flex items-center gap-2 justify-center border-destructive/50 hover:bg-destructive/10"
+              className="w-full flex items-center gap-2 justify-center bg-destructive/10 border-destructive/20 hover:bg-destructive/20 text-destructive"
             >
               <LogOut size={20} />
-              Выйти из аккаунта
+              <span className="font-semibold">Выйти из аккаунта</span>
             </CustomButton>
           </div>
         </div>

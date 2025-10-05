@@ -47,51 +47,52 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
+    <div className="min-h-screen flex items-center justify-center px-4 bg-background">
       <div className="w-full max-w-md">
         {/* Logo */}
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <BookOpen size={32} className="text-background" />
+        <div className="text-center mb-10">
+          <div className="w-20 h-20 bg-gradient-to-br from-primary to-primary-glow rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+            <BookOpen size={40} className="text-primary-foreground" />
           </div>
-          <h1 className="text-2xl font-bold">Добро пожаловать в StudyVibe</h1>
-          <p className="text-text-muted mt-2">Войдите в свой аккаунт</p>
+          <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+            Добро пожаловать
+          </h1>
+          <p className="text-text-muted">Войдите в свой аккаунт StudyVibe</p>
         </div>
 
-
         {/* Login Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-sm font-medium mb-2">Email</label>
+            <label className="block text-sm font-semibold mb-2">Email</label>
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 bg-surface-elevated border border-border rounded-xl 
+              className="w-full px-4 py-4 bg-surface-elevated border border-border rounded-2xl 
                        text-foreground placeholder-text-muted focus:outline-none focus:ring-2 
-                       focus:ring-primary focus:border-transparent"
+                       focus:ring-primary focus:border-transparent shadow-sm transition-all"
               placeholder="your@email.com"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">Пароль</label>
+            <label className="block text-sm font-semibold mb-2">Пароль</label>
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-surface-elevated border border-border rounded-xl 
+                className="w-full px-4 py-4 bg-surface-elevated border border-border rounded-2xl 
                          text-foreground placeholder-text-muted focus:outline-none focus:ring-2 
-                         focus:ring-primary focus:border-transparent pr-12"
+                         focus:ring-primary focus:border-transparent pr-12 shadow-sm transition-all"
                 placeholder="••••••••"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-muted hover:text-foreground"
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-text-muted hover:text-foreground transition-all active:scale-95"
               >
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
@@ -100,7 +101,7 @@ export default function Login() {
 
           <CustomButton 
             type="submit" 
-            className="w-full flex items-center justify-center gap-2"
+            className="w-full flex items-center justify-center gap-2 mt-6"
             disabled={isLoading}
           >
             {isLoading ? <Loader variant="white" className="scale-50" /> : "Войти"}
@@ -110,7 +111,7 @@ export default function Login() {
         <div className="text-center mt-6">
           <p className="text-text-muted">
             Нет аккаунта?{" "}
-            <Link to="/register" className="text-primary hover:underline">
+            <Link to="/register" className="text-primary font-semibold hover:underline">
               Зарегистрироваться
             </Link>
           </p>

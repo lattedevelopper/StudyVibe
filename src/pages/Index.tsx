@@ -72,63 +72,75 @@ export default function Index() {
   };
 
   return (
-    <div className="min-h-screen pb-20">
+    <div className="min-h-screen pb-20 bg-background">
       {/* Header */}
-      <div className="px-4 pt-6 pb-4">
+      <div className="px-4 pt-8 pb-6">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold">StudyVibe</h1>
-            <p className="text-text-muted">У вас {homework.filter(hw => !isCompleted(hw.id)).length} активных заданий</p>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+              StudyVibe
+            </h1>
+            <p className="text-text-muted mt-1">
+              {homework.filter(hw => !isCompleted(hw.id)).length} активных заданий
+            </p>
           </div>
           <div className="flex gap-2">
             <button 
               onClick={() => navigate("/search")}
-              className="p-3 rounded-xl bg-surface-elevated text-text-muted hover:text-foreground transition-colors"
+              className="p-3 rounded-2xl bg-surface-elevated border border-border shadow-sm hover:shadow-md transition-all active:scale-95"
             >
-              <Search size={20} />
+              <Search size={22} className="text-foreground" />
             </button>
             <button 
               onClick={() => setShowNotifications(true)}
-              className="p-3 rounded-xl bg-surface-elevated text-text-muted hover:text-foreground transition-colors"
+              className="p-3 rounded-2xl bg-surface-elevated border border-border shadow-sm hover:shadow-md transition-all active:scale-95"
             >
-              <Bell size={20} />
+              <Bell size={22} className="text-foreground" />
             </button>
           </div>
         </div>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-3 gap-3 mb-6">
-          <div className="homework-card text-center py-3">
-            <BookOpen className="mx-auto mb-1 text-primary" size={20} />
-            <div className="text-lg font-bold">{homework.length}</div>
-            <div className="text-xs text-text-muted">Всего</div>
-          </div>
-          <div className="homework-card text-center py-3">
-            <Calendar className="mx-auto mb-1 text-primary" size={20} />
-            <div className="text-lg font-bold">{homework.filter(hw => !isCompleted(hw.id)).length}</div>
-            <div className="text-xs text-text-muted">Активных</div>
-          </div>
-          <div className="homework-card text-center py-3">
-            <div className="w-5 h-5 bg-primary rounded-full mx-auto mb-1 flex items-center justify-center">
-              <span className="text-xs text-background">✓</span>
+        <div className="grid grid-cols-3 gap-3 mb-8">
+          <div className="homework-card text-center py-4">
+            <div className="w-10 h-10 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-2">
+              <BookOpen className="text-primary" size={20} />
             </div>
-            <div className="text-lg font-bold">{homework.filter(hw => isCompleted(hw.id)).length}</div>
-            <div className="text-xs text-text-muted">Выполнено</div>
+            <div className="text-2xl font-bold">{homework.length}</div>
+            <div className="text-xs text-text-muted mt-1">Всего</div>
+          </div>
+          <div className="homework-card text-center py-4">
+            <div className="w-10 h-10 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-2">
+              <Calendar className="text-primary" size={20} />
+            </div>
+            <div className="text-2xl font-bold">{homework.filter(hw => !isCompleted(hw.id)).length}</div>
+            <div className="text-xs text-text-muted mt-1">Активных</div>
+          </div>
+          <div className="homework-card text-center py-4">
+            <div className="w-10 h-10 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-2">
+              <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
+                <span className="text-xs text-primary-foreground font-bold">✓</span>
+              </div>
+            </div>
+            <div className="text-2xl font-bold">{homework.filter(hw => isCompleted(hw.id)).length}</div>
+            <div className="text-xs text-text-muted mt-1">Выполнено</div>
           </div>
         </div>
       </div>
 
       {/* Homework List */}
       <div className="px-4">
-        <h2 className="text-lg font-semibold mb-4">Домашние задания</h2>
+        <h2 className="text-xl font-bold mb-4">Домашние задания</h2>
         
         {/* Homework Cards */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           {homework.length === 0 ? (
-            <div className="text-center py-12">
-              <BookOpen size={48} className="mx-auto text-text-muted mb-4" />
-              <h3 className="text-lg font-semibold text-text-muted mb-2">Нет домашних заданий</h3>
-              <p className="text-text-muted">Пока что заданий не добавлено</p>
+            <div className="homework-card text-center py-16">
+              <div className="w-16 h-16 bg-muted rounded-3xl flex items-center justify-center mx-auto mb-4">
+                <BookOpen size={32} className="text-muted-foreground" />
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Нет домашних заданий</h3>
+              <p className="text-text-muted text-sm">Пока что заданий не добавлено</p>
             </div>
           ) : (
             homework.map((hw) => (

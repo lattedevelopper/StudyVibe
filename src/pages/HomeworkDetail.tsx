@@ -181,50 +181,56 @@ export default function HomeworkDetail() {
   }
   const isCompleted = submission?.is_completed || false;
   return <div 
-      className="min-h-screen p-4"
+      className="min-h-screen p-4 pb-20 bg-background"
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
     >
       <div className="max-w-4xl mx-auto">
-        <button onClick={() => navigate("/")} className="flex items-center gap-2 text-text-muted hover:text-foreground mb-6 transition-colors">
-          <ArrowLeft size={20} />
-          Назад к заданиям
+        <button onClick={() => navigate("/")} className="flex items-center gap-2 text-text-muted hover:text-foreground mb-8 transition-all active:scale-95 p-2 rounded-2xl hover:bg-surface-elevated">
+          <ArrowLeft size={22} />
+          <span className="font-medium">Назад к заданиям</span>
         </button>
 
         <div className="homework-card">
-          <div className="flex items-start justify-between mb-4">
+          <div className="flex items-start justify-between mb-6">
             <div className="flex items-center gap-2">
-              <span className="text-sm font-semibold text-primary">{homework.subject}</span>
-              {isCompleted && <CheckCircle2 size={16} className="text-primary" />}
+              <span className="px-3 py-1.5 bg-primary/10 text-primary text-sm font-bold rounded-full">
+                {homework.subject}
+              </span>
+              {isCompleted && (
+                <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
+                  <CheckCircle2 size={14} className="text-primary-foreground" />
+                </div>
+              )}
             </div>
           </div>
 
-          <h1 className="text-3xl font-bold mb-4">{homework.title}</h1>
+          <h1 className="text-3xl font-bold mb-6">{homework.title}</h1>
 
-          <div className="flex items-center gap-6 text-sm text-text-muted mb-6">
-            <div className="flex items-center gap-2">
-              <Calendar size={16} />
-              <span>{new Date(homework.due_date).toLocaleDateString('ru-RU')}</span>
+          <div className="flex items-center gap-4 text-sm mb-8">
+            <div className="flex items-center gap-2 px-3 py-2 bg-background rounded-xl">
+              <Calendar size={18} className="text-primary" />
+              <span className="font-medium">{new Date(homework.due_date).toLocaleDateString('ru-RU')}</span>
             </div>
-            <div className="flex items-center gap-2">
-              <Clock size={16} />
-              <span>{getTimeLeft(homework.due_date)}</span>
+            <div className="flex items-center gap-2 px-3 py-2 bg-background rounded-xl">
+              <Clock size={18} className="text-primary" />
+              <span className="font-medium">{getTimeLeft(homework.due_date)}</span>
             </div>
           </div>
 
           <div className="mb-8">
-            <h2 className="text-xl font-semibold mb-3">Описание задания</h2>
-            <div className="prose prose-sm max-w-none">
-              <p className="text-foreground whitespace-pre-wrap">{homework.description}</p>
+            <h2 className="text-xl font-bold mb-4">Описание задания</h2>
+            <div className="p-4 bg-background/50 rounded-2xl border border-border">
+              <p className="text-foreground whitespace-pre-wrap leading-relaxed">{homework.description}</p>
             </div>
           </div>
 
           {homework.solution && (
             <div className="mb-8">
-              <h2 className="text-xl font-semibold mb-3">Решение</h2>
-              <div className="p-4 bg-primary/10 rounded-lg">
-                <p className="text-foreground whitespace-pre-wrap">{homework.solution}</p>
+              <h2 className="text-xl font-bold mb-4">Решение</h2>
+              <div className="p-5 bg-primary/5 border border-primary/20 rounded-2xl">
+                <p className="text-foreground whitespace-pre-wrap leading-relaxed">{homework.solution}</p>
               </div>
             </div>
           )}
