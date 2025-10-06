@@ -269,33 +269,33 @@ export default function Profile() {
           <div className="grid grid-cols-2 gap-3 mb-4">
             <CustomButton
               onClick={() => navigate("/statistics")}
-              className="flex flex-col items-center gap-2 py-6"
+              className="flex flex-col items-center gap-2 py-6 group"
             >
-              <BarChart3 size={24} className="text-primary" />
+              <BarChart3 size={24} className="text-primary group-hover:text-foreground transition-colors" />
               <span className="text-sm">Статистика</span>
             </CustomButton>
 
             <CustomButton
               onClick={() => navigate("/journal")}
-              className="flex flex-col items-center gap-2 py-6"
+              className="flex flex-col items-center gap-2 py-6 group"
             >
-              <BookOpen size={24} className="text-primary" />
+              <BookOpen size={24} className="text-primary group-hover:text-foreground transition-colors" />
               <span className="text-sm">Журнал</span>
             </CustomButton>
 
             <CustomButton
               onClick={() => navigate("/schedule")}
-              className="flex flex-col items-center gap-2 py-6"
+              className="flex flex-col items-center gap-2 py-6 group"
             >
-              <Calendar size={24} className="text-primary" />
+              <Calendar size={24} className="text-primary group-hover:text-foreground transition-colors" />
               <span className="text-sm">Расписание</span>
             </CustomButton>
 
             <CustomButton
               onClick={() => navigate("/admin")}
-              className="flex flex-col items-center gap-2 py-6"
+              className="flex flex-col items-center gap-2 py-6 group"
             >
-              <Shield size={24} className="text-primary" />
+              <Shield size={24} className="text-primary group-hover:text-foreground transition-colors" />
               <span className="text-sm">Админ</span>
             </CustomButton>
           </div>
