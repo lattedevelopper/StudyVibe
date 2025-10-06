@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, Bell, Calendar, BookOpen } from "lucide-react";
 import { HomeworkCard } from "@/components/homework/homework-card";
+import { TagsFilter } from "@/components/homework/tags-filter";
 import { NotificationPanel } from "@/components/notifications/notification-panel";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,6 +13,7 @@ interface Homework {
   subject: string;
   description: string;
   due_date: string;
+  tags?: string[];
 }
 
 interface HomeworkSubmission {
@@ -25,6 +27,7 @@ export default function Index() {
   const [homework, setHomework] = useState<Homework[]>([]);
   const [submissions, setSubmissions] = useState<HomeworkSubmission[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   useEffect(() => {
     if (!user) {
@@ -70,6 +73,16 @@ export default function Index() {
   const isCompleted = (homeworkId: string) => {
     return submissions.find(s => s.homework_id === homeworkId)?.is_completed || false;
   };
+
+  // Get all unique tags from homework
+  const allTags = [...new Set(homework.flatMap(hw => hw.tags || []))];
+
+  // Filter homework by selected tags
+  const filteredHomework = selectedTags.length === 0
+    ? homework
+    : homework.filter(hw => 
+        hw.tags?.some(tag => selectedTags.includes(tag))
+      );
 
   return (
     <div className="min-h-screen pb-20">
@@ -122,16 +135,27 @@ export default function Index() {
       <div className="px-4">
         <h2 className="text-lg font-semibold mb-4">Домашние задания</h2>
         
+        {/* Tags Filter */}
+        <TagsFilter
+          allTags={allTags}
+          selectedTags={selectedTags}
+          onTagsChange={setSelectedTags}
+        />
+
         {/* Homework Cards */}
         <div className="space-y-4">
-          {homework.length === 0 ? (
+          {filteredHomework.length === 0 ? (
             <div className="text-center py-12">
               <BookOpen size={48} className="mx-auto text-text-muted mb-4" />
-              <h3 className="text-lg font-semibold text-text-muted mb-2">Нет домашних заданий</h3>
-              <p className="text-text-muted">Пока что заданий не добавлено</p>
+              <h3 className="text-lg font-semibold text-text-muted mb-2">
+                {selectedTags.length > 0 ? "Нет заданий с такими тегами" : "Нет домашних заданий"}
+              </h3>
+              <p className="text-text-muted">
+                {selectedTags.length > 0 ? "Попробуйте изменить фильтр" : "Пока что заданий не добавлено"}
+              </p>
             </div>
           ) : (
-            homework.map((hw) => (
+            filteredHomework.map((hw) => (
               <HomeworkCard
                 key={hw.id}
                 title={hw.title}

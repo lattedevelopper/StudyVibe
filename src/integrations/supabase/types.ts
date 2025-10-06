@@ -24,6 +24,7 @@ export type Database = {
           ready_assignments: string[] | null
           solution: string | null
           subject: string
+          tags: string[] | null
           title: string
           updated_at: string
         }
@@ -36,6 +37,7 @@ export type Database = {
           ready_assignments?: string[] | null
           solution?: string | null
           subject: string
+          tags?: string[] | null
           title: string
           updated_at?: string
         }
@@ -48,10 +50,56 @@ export type Database = {
           ready_assignments?: string[] | null
           solution?: string | null
           subject?: string
+          tags?: string[] | null
           title?: string
           updated_at?: string
         }
         Relationships: []
+      }
+      homework_comments: {
+        Row: {
+          content: string
+          created_at: string
+          homework_id: string
+          id: string
+          parent_comment_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          homework_id: string
+          id?: string
+          parent_comment_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          homework_id?: string
+          id?: string
+          parent_comment_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "homework_comments_homework_id_fkey"
+            columns: ["homework_id"]
+            isOneToOne: false
+            referencedRelation: "homework"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "homework_comments_parent_comment_id_fkey"
+            columns: ["parent_comment_id"]
+            isOneToOne: false
+            referencedRelation: "homework_comments"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       homework_submissions: {
         Row: {

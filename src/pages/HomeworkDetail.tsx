@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Calendar, Clock, CheckCircle2 } from "lucide-react";
 import { CustomButton } from "@/components/ui/custom-button";
+import { HomeworkComments } from "@/components/homework/homework-comments";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -259,6 +260,11 @@ export default function HomeworkDetail() {
                 Выполнено: {new Date(submission.submitted_at).toLocaleString('ru-RU')}
               </p>
             </div>}
+        </div>
+
+        {/* Comments Section */}
+        <div className="homework-card mt-6">
+          <HomeworkComments homeworkId={homework.id} />
         </div>
       </div>
     </div>;
