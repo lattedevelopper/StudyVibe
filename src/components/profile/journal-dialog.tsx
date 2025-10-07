@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Calendar, Plus, Trash2 } from "lucide-react";
+import { Calendar, Plus, Trash2, BookText, ListTodo } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { Checkbox } from "@/components/ui/checkbox";
+import { cn } from "@/lib/utils";
 
 interface JournalEntry {
   id: string;
@@ -35,6 +36,7 @@ export function JournalDialog({ open, onOpenChange }: JournalDialogProps) {
   const [entryContent, setEntryContent] = useState("");
   const [todos, setTodos] = useState<Todo[]>([]);
   const [newTodo, setNewTodo] = useState("");
+  const [activeTab, setActiveTab] = useState<"notes" | "todos">("notes");
 
   useEffect(() => {
     if (user && open) {
@@ -173,7 +175,7 @@ export function JournalDialog({ open, onOpenChange }: JournalDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold">Журнал</DialogTitle>
         </DialogHeader>
@@ -191,73 +193,105 @@ export function JournalDialog({ open, onOpenChange }: JournalDialogProps) {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          {/* Notes Section */}
-          <div className="space-y-3">
-            <h3 className="text-lg font-semibold flex items-center gap-2">
-              📝 Заметки
-            </h3>
-            <Textarea
-              value={entryContent}
-              onChange={(e) => setEntryContent(e.target.value)}
-              placeholder="Ваши мысли и заметки..."
-              className="min-h-[200px] resize-none"
+        {/* Tabs */}
+        <div className="relative mb-6">
+          <div className="flex gap-2 bg-surface-elevated p-1 rounded-lg relative">
+            {/* Animated background */}
+            <div
+              className={cn(
+                "absolute top-1 h-[calc(100%-8px)] bg-primary rounded-md transition-all duration-300 ease-out",
+                activeTab === "notes" ? "left-1 w-[calc(50%-4px)]" : "left-[calc(50%+2px)] w-[calc(50%-4px)]"
+              )}
             />
-            <Button onClick={saveEntry} className="w-full">
-              Сохранить заметку
-            </Button>
-          </div>
-
-          {/* To-Do List Section */}
-          <div className="space-y-3">
-            <h3 className="text-lg font-semibold flex items-center gap-2">
-              ✓ Задачи
-            </h3>
             
-            <div className="flex gap-2">
-              <Input
-                value={newTodo}
-                onChange={(e) => setNewTodo(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && addTodo()}
-                placeholder="Новая задача..."
+            <button
+              onClick={() => setActiveTab("notes")}
+              className={cn(
+                "flex-1 flex items-center justify-center gap-2 py-3 rounded-md transition-colors relative z-10 font-medium",
+                activeTab === "notes" ? "text-primary-foreground" : "text-foreground hover:text-primary"
+              )}
+            >
+              <BookText size={18} />
+              Заметки
+            </button>
+            
+            <button
+              onClick={() => setActiveTab("todos")}
+              className={cn(
+                "flex-1 flex items-center justify-center gap-2 py-3 rounded-md transition-colors relative z-10 font-medium",
+                activeTab === "todos" ? "text-primary-foreground" : "text-foreground hover:text-primary"
+              )}
+            >
+              <ListTodo size={18} />
+              Задачи
+            </button>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="min-h-[400px]">
+          {activeTab === "notes" && (
+            <div className="space-y-4 animate-fade-in">
+              <Textarea
+                value={entryContent}
+                onChange={(e) => setEntryContent(e.target.value)}
+                placeholder="Ваши мысли и заметки..."
+                className="min-h-[300px] resize-none"
               />
-              <Button onClick={addTodo} size="icon" className="shrink-0">
-                <Plus size={20} />
+              <Button onClick={saveEntry} className="w-full">
+                Сохранить заметку
               </Button>
             </div>
+          )}
 
-            <div className="space-y-2 max-h-[300px] overflow-y-auto pr-2">
-              {todos.map((todo) => (
-                <div
-                  key={todo.id}
-                  className="flex items-center gap-3 p-3 bg-surface-elevated border border-border rounded-lg hover:bg-accent/50 transition-colors"
-                >
-                  <Checkbox
-                    checked={todo.is_completed}
-                    onCheckedChange={() => toggleTodo(todo)}
-                  />
-                  <span className={`flex-1 ${todo.is_completed ? 'line-through text-muted-foreground' : ''}`}>
-                    {todo.title}
-                  </span>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => deleteTodo(todo.id)}
-                    className="shrink-0"
+          {activeTab === "todos" && (
+            <div className="space-y-4 animate-fade-in">
+              <div className="flex gap-2">
+                <Input
+                  value={newTodo}
+                  onChange={(e) => setNewTodo(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && addTodo()}
+                  placeholder="Новая задача..."
+                />
+                <Button onClick={addTodo} size="icon" className="shrink-0">
+                  <Plus size={20} />
+                </Button>
+              </div>
+
+              <div className="space-y-2 max-h-[340px] overflow-y-auto pr-2">
+                {todos.map((todo) => (
+                  <div
+                    key={todo.id}
+                    className="flex items-center gap-3 p-3 bg-surface-elevated border border-border rounded-lg hover:bg-accent/50 transition-colors"
                   >
-                    <Trash2 size={16} />
-                  </Button>
-                </div>
-              ))}
+                    <Checkbox
+                      checked={todo.is_completed}
+                      onCheckedChange={() => toggleTodo(todo)}
+                    />
+                    <span className={`flex-1 ${todo.is_completed ? 'line-through text-muted-foreground' : ''}`}>
+                      {todo.title}
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => deleteTodo(todo.id)}
+                      className="shrink-0"
+                    >
+                      <Trash2 size={16} />
+                    </Button>
+                  </div>
+                ))}
 
-              {todos.length === 0 && (
-                <div className="text-center text-muted-foreground py-8 border-2 border-dashed border-border rounded-lg">
-                  <p className="text-sm">Нет задач</p>
-                  <p className="text-xs mt-1">Добавьте первую задачу</p>
-                </div>
-              )}
+                {todos.length === 0 && (
+                  <div className="text-center text-muted-foreground py-12 border-2 border-dashed border-border rounded-lg">
+                    <ListTodo size={32} className="mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">Нет задач</p>
+                    <p className="text-xs mt-1">Добавьте первую задачу</p>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>

@@ -198,6 +198,13 @@ export function HomeworkComments({ homeworkId }: HomeworkCommentsProps) {
   const CommentItem = ({ comment, isReply = false }: { comment: Comment; isReply?: boolean }) => (
     <div className={`${isReply ? "ml-12 mt-3" : ""}`}>
       <div className="flex gap-3">
+        <Avatar className="w-10 h-10 border-2 border-primary/20 shrink-0">
+          <AvatarImage src={comment.profile?.avatar_url || undefined} />
+          <AvatarFallback className="text-sm bg-primary/10 text-primary">
+            {getInitials(comment.profile?.full_name)}
+          </AvatarFallback>
+        </Avatar>
+
         <div className="flex-1">
           <div className="bg-surface-elevated rounded-2xl px-4 py-3">
             <div className="flex items-center justify-between mb-1">
@@ -281,21 +288,29 @@ export function HomeworkComments({ homeworkId }: HomeworkCommentsProps) {
 
       {/* New Comment Input */}
       <div className="mb-6">
-        <div className="flex gap-2">
-          <Textarea
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            placeholder="Напишите комментарий..."
-            className="resize-none min-h-[80px]"
-            disabled={loading}
-          />
-          <button
-            onClick={handleSubmitComment}
-            disabled={loading || !newComment.trim()}
-            className="w-20 h-20 bg-primary text-primary-foreground rounded-md hover:opacity-90 disabled:opacity-50 transition-opacity flex items-center justify-center"
-          >
-            <Send size={20} />
-          </button>
+        <div className="flex gap-3">
+          <Avatar className="w-10 h-10 border-2 border-primary/20 shrink-0">
+            <AvatarImage src={user?.user_metadata?.avatar_url} />
+            <AvatarFallback className="text-sm bg-primary/10 text-primary">
+              {getInitials(user?.user_metadata?.full_name)}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex gap-2 flex-1">
+            <Textarea
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              placeholder="Напишите комментарий..."
+              className="resize-none min-h-[80px]"
+              disabled={loading}
+            />
+            <button
+              onClick={handleSubmitComment}
+              disabled={loading || !newComment.trim()}
+              className="w-20 h-20 bg-primary text-primary-foreground rounded-md hover:opacity-90 disabled:opacity-50 transition-opacity flex items-center justify-center shrink-0"
+            >
+              <Send size={20} />
+            </button>
+          </div>
         </div>
       </div>
 

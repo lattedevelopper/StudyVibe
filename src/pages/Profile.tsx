@@ -271,7 +271,7 @@ export default function Profile() {
               onClick={() => navigate("/statistics")}
               className="flex flex-col items-center gap-2 py-6 group"
             >
-              <BarChart3 size={24} className="text-primary group-hover:text-foreground transition-colors" />
+              <BarChart3 size={24} className="text-primary-foreground transition-colors" />
               <span className="text-sm">Статистика</span>
             </CustomButton>
 
@@ -279,7 +279,7 @@ export default function Profile() {
               onClick={() => navigate("/journal")}
               className="flex flex-col items-center gap-2 py-6 group"
             >
-              <BookOpen size={24} className="text-primary group-hover:text-foreground transition-colors" />
+              <BookOpen size={24} className="text-primary-foreground transition-colors" />
               <span className="text-sm">Журнал</span>
             </CustomButton>
 
@@ -287,7 +287,7 @@ export default function Profile() {
               onClick={() => navigate("/schedule")}
               className="flex flex-col items-center gap-2 py-6 group"
             >
-              <Calendar size={24} className="text-primary group-hover:text-foreground transition-colors" />
+              <Calendar size={24} className="text-primary-foreground transition-colors" />
               <span className="text-sm">Расписание</span>
             </CustomButton>
 
@@ -295,7 +295,7 @@ export default function Profile() {
               onClick={() => navigate("/admin")}
               className="flex flex-col items-center gap-2 py-6 group"
             >
-              <Shield size={24} className="text-primary group-hover:text-foreground transition-colors" />
+              <Shield size={24} className="text-primary-foreground transition-colors" />
               <span className="text-sm">Админ</span>
             </CustomButton>
           </div>
