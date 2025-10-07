@@ -271,32 +271,32 @@ export default function Profile() {
               onClick={() => navigate("/statistics")}
               className="flex flex-col items-center gap-2 py-6 group"
             >
-              <BarChart3 size={24} className="text-primary-foreground transition-colors" />
-              <span className="text-sm">Статистика</span>
+              <BarChart3 size={24} className="text-primary group-hover:text-foreground transition-colors" />
+              <span className="text-sm text-primary-foreground group-hover:text-foreground transition-colors">Статистика</span>
             </CustomButton>
 
             <CustomButton
               onClick={() => navigate("/journal")}
               className="flex flex-col items-center gap-2 py-6 group"
             >
-              <BookOpen size={24} className="text-primary-foreground transition-colors" />
-              <span className="text-sm">Журнал</span>
+              <BookOpen size={24} className="text-primary group-hover:text-foreground transition-colors" />
+              <span className="text-sm text-primary-foreground group-hover:text-foreground transition-colors">Журнал</span>
             </CustomButton>
 
             <CustomButton
               onClick={() => navigate("/schedule")}
               className="flex flex-col items-center gap-2 py-6 group"
             >
-              <Calendar size={24} className="text-primary-foreground transition-colors" />
-              <span className="text-sm">Расписание</span>
+              <Calendar size={24} className="text-primary group-hover:text-foreground transition-colors" />
+              <span className="text-sm text-primary-foreground group-hover:text-foreground transition-colors">Расписание</span>
             </CustomButton>
 
             <CustomButton
               onClick={() => navigate("/admin")}
               className="flex flex-col items-center gap-2 py-6 group"
             >
-              <Shield size={24} className="text-primary-foreground transition-colors" />
-              <span className="text-sm">Админ</span>
+              <Shield size={24} className="text-primary group-hover:text-foreground transition-colors" />
+              <span className="text-sm text-primary-foreground group-hover:text-foreground transition-colors">Админ</span>
             </CustomButton>
           </div>
 
