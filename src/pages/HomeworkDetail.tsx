@@ -263,7 +263,7 @@ export default function HomeworkDetail() {
         </div>
 
         {/* Comments Section */}
-        <div className="homework-card mt-6">
+        <div className="homework-card mt-6 mb-24">
           <HomeworkComments homeworkId={homework.id} />
         </div>
       </div>

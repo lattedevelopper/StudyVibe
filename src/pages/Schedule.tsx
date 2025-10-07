@@ -9,6 +9,7 @@ interface Lesson {
   subject: string;
   teacher_name: string;
   room_number: string;
+  start_time: string;
 }
 
 const DAYS = [
@@ -100,6 +101,7 @@ export default function Schedule() {
                         {lesson ? (
                           <div className="py-2">
                             <div className="font-semibold text-base mb-1">{lesson.subject}</div>
+                            <div className="text-xs text-muted-foreground mb-1">{lesson.start_time.slice(0, 5)}</div>
                             <div className="text-xs text-muted-foreground">{lesson.room_number}</div>
                           </div>
                         ) : (
@@ -140,6 +142,7 @@ export default function Schedule() {
                           <h3 className="font-semibold text-base mb-1 truncate">{lesson.subject}</h3>
                           <div className="flex items-center gap-4 text-sm text-muted-foreground">
                             <span className="truncate">{lesson.teacher_name}</span>
+                            <span className="flex-shrink-0">{lesson.start_time.slice(0, 5)}</span>
                             <span className="flex-shrink-0">Каб. {lesson.room_number}</span>
                           </div>
                         </div>

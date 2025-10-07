@@ -260,6 +260,7 @@ export type Database = {
           id: string
           lesson_number: number
           room_number: string
+          start_time: string
           subject: string
           teacher_name: string
           updated_at: string
@@ -270,6 +271,7 @@ export type Database = {
           id?: string
           lesson_number: number
           room_number: string
+          start_time?: string
           subject: string
           teacher_name: string
           updated_at?: string
@@ -280,6 +282,7 @@ export type Database = {
           id?: string
           lesson_number?: number
           room_number?: string
+          start_time?: string
           subject?: string
           teacher_name?: string
           updated_at?: string
