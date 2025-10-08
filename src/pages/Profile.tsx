@@ -267,38 +267,31 @@ export default function Profile() {
 
           {/* Quick Actions */}
           <div className="grid grid-cols-2 gap-3 mb-4">
-            <button
-              onClick={() => navigate("/statistics")}
-              className="flex flex-col items-center gap-2 py-6 bg-surface-elevated rounded-lg border border-border hover:bg-surface transition-colors"
-            >
-              <BarChart3 size={24} className="text-primary-foreground" />
-              <span className="text-sm text-primary-foreground">Статистика</span>
-            </button>
-
-            <button
-              onClick={() => navigate("/journal")}
-              className="flex flex-col items-center gap-2 py-6 bg-surface-elevated rounded-lg border border-border hover:bg-surface transition-colors"
-            >
-              <BookOpen size={24} className="text-primary-foreground" />
-              <span className="text-sm text-primary-foreground">Журнал</span>
-            </button>
-
-            <button
-              onClick={() => navigate("/schedule")}
-              className="flex flex-col items-center gap-2 py-6 bg-surface-elevated rounded-lg border border-border hover:bg-surface transition-colors"
-            >
-              <Calendar size={24} className="text-primary-foreground" />
-              <span className="text-sm text-primary-foreground">Расписание</span>
-            </button>
-
-            <button
-              onClick={() => navigate("/admin")}
-              className="flex flex-col items-center gap-2 py-6 bg-surface-elevated rounded-lg border border-border hover:bg-surface transition-colors"
-            >
-              <Shield size={24} className="text-primary-foreground" />
-              <span className="text-sm text-primary-foreground">Админ</span>
-            </button>
+            {[
+              { icon: BarChart3, label: "Статистика", to: "/statistics" },
+              { icon: BookOpen, label: "Журнал", to: "/journal" },
+              { icon: Calendar, label: "Расписание", to: "/schedule" },
+              { icon: Shield, label: "Админ", to: "/admin" },
+            ].map(({ icon: Icon, label, to }) => (
+              <button
+                key={to}
+                onClick={() => navigate(to)}
+                className="
+                  flex flex-col items-center gap-2 py-6
+                  rounded-2xl border border-border
+                  bg-card hover:bg-muted
+                  text-foreground
+                  shadow-sm hover:shadow-md
+                  transition-all
+                  hover:-translate-y-0.5 active:translate-y-0
+                "
+              >
+                <Icon size={24} className="text-primary" />
+                <span className="text-sm">{label}</span>
+              </button>
+            ))}
           </div>
+
 
           {/* Settings & Logout */}
           <div className="space-y-3 pt-4 border-t border-border">
