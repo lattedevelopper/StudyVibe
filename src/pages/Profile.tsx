@@ -283,7 +283,6 @@ export default function Profile() {
                   text-foreground
                   shadow-sm hover:shadow-md
                   transition-all
-                  hover:-translate-y-0.5 active:translate-y-0
                 "
               >
                 <Icon size={24} className="text-primary" />
