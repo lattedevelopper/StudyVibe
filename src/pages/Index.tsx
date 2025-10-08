@@ -1,11 +1,19 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, Bell, Calendar, BookOpen } from "lucide-react";
+import { Search, Bell, Calendar, BookOpen, Filter } from "lucide-react";
 import { HomeworkCard } from "@/components/homework/homework-card";
 import { TagsFilter } from "@/components/homework/tags-filter";
 import { NotificationPanel } from "@/components/notifications/notification-panel";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 
 interface Homework {
   id: string;
@@ -28,6 +36,9 @@ export default function Index() {
   const [submissions, setSubmissions] = useState<HomeworkSubmission[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedSubject, setSelectedSubject] = useState<string>("all");
+  const [sortBy, setSortBy] = useState<string>("date");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
 
   useEffect(() => {
     if (!user) {
@@ -74,15 +85,40 @@ export default function Index() {
     return submissions.find(s => s.homework_id === homeworkId)?.is_completed || false;
   };
 
-  // Get all unique tags from homework
+  // Get all unique tags and subjects from homework
   const allTags = [...new Set(homework.flatMap(hw => hw.tags || []))];
+  const allSubjects = [...new Set(homework.map(hw => hw.subject))];
 
-  // Filter homework by selected tags
-  const filteredHomework = selectedTags.length === 0
-    ? homework
-    : homework.filter(hw => 
-        hw.tags?.some(tag => selectedTags.includes(tag))
-      );
+  // Filter and sort homework
+  const filteredHomework = homework
+    .filter(hw => {
+      // Filter by tags
+      const matchesTags = selectedTags.length === 0 || hw.tags?.some(tag => selectedTags.includes(tag));
+      
+      // Filter by subject
+      const matchesSubject = selectedSubject === "all" || hw.subject === selectedSubject;
+      
+      // Filter by status
+      const completed = isCompleted(hw.id);
+      const matchesStatus = 
+        statusFilter === "all" || 
+        (statusFilter === "active" && !completed) || 
+        (statusFilter === "completed" && completed);
+      
+      return matchesTags && matchesSubject && matchesStatus;
+    })
+    .sort((a, b) => {
+      if (sortBy === "date") {
+        return new Date(a.due_date).getTime() - new Date(b.due_date).getTime();
+      } else if (sortBy === "subject") {
+        return a.subject.localeCompare(b.subject);
+      } else if (sortBy === "priority") {
+        const aDays = Math.ceil((new Date(a.due_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
+        const bDays = Math.ceil((new Date(b.due_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
+        return aDays - bDays;
+      }
+      return 0;
+    });
 
   return (
     <div className="min-h-screen pb-20">
@@ -135,12 +171,53 @@ export default function Index() {
       <div className="px-4">
         <h2 className="text-lg font-semibold mb-4">Домашние задания</h2>
         
-        {/* Tags Filter */}
-        <TagsFilter
-          allTags={allTags}
-          selectedTags={selectedTags}
-          onTagsChange={setSelectedTags}
-        />
+        {/* Filters and Sort */}
+        <div className="space-y-3 mb-4">
+          {/* Tags Filter */}
+          <TagsFilter
+            allTags={allTags}
+            selectedTags={selectedTags}
+            onTagsChange={setSelectedTags}
+          />
+          
+          {/* Subject and Status Filters */}
+          <div className="grid grid-cols-2 gap-3">
+            <Select value={selectedSubject} onValueChange={setSelectedSubject}>
+              <SelectTrigger>
+                <SelectValue placeholder="Все предметы" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Все предметы</SelectItem>
+                {allSubjects.map(subject => (
+                  <SelectItem key={subject} value={subject}>{subject}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger>
+                <SelectValue placeholder="Все" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Все</SelectItem>
+                <SelectItem value="active">Активные</SelectItem>
+                <SelectItem value="completed">Завершенные</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          
+          {/* Sort */}
+          <Select value={sortBy} onValueChange={setSortBy}>
+            <SelectTrigger>
+              <SelectValue placeholder="Сортировка" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="date">По дате</SelectItem>
+              <SelectItem value="priority">По приоритету</SelectItem>
+              <SelectItem value="subject">По предмету</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
         {/* Homework Cards */}
         <div className="space-y-4">

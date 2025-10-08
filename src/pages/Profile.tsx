@@ -267,37 +267,37 @@ export default function Profile() {
 
           {/* Quick Actions */}
           <div className="grid grid-cols-2 gap-3 mb-4">
-            <CustomButton
+            <button
               onClick={() => navigate("/statistics")}
-              className="flex flex-col items-center gap-2 py-6 group"
+              className="flex flex-col items-center gap-2 py-6 bg-surface-elevated rounded-lg border border-border hover:bg-surface transition-colors"
             >
-              <BarChart3 size={24} className="text-primary-foreground transition-colors" />
-              <span className="text-sm">Статистика</span>
-            </CustomButton>
+              <BarChart3 size={24} className="text-primary-foreground" />
+              <span className="text-sm text-primary-foreground">Статистика</span>
+            </button>
 
-            <CustomButton
+            <button
               onClick={() => navigate("/journal")}
-              className="flex flex-col items-center gap-2 py-6 group"
+              className="flex flex-col items-center gap-2 py-6 bg-surface-elevated rounded-lg border border-border hover:bg-surface transition-colors"
             >
-              <BookOpen size={24} className="text-primary-foreground transition-colors" />
-              <span className="text-sm">Журнал</span>
-            </CustomButton>
+              <BookOpen size={24} className="text-primary-foreground" />
+              <span className="text-sm text-primary-foreground">Журнал</span>
+            </button>
 
-            <CustomButton
+            <button
               onClick={() => navigate("/schedule")}
-              className="flex flex-col items-center gap-2 py-6 group"
+              className="flex flex-col items-center gap-2 py-6 bg-surface-elevated rounded-lg border border-border hover:bg-surface transition-colors"
             >
-              <Calendar size={24} className="text-primary-foreground transition-colors" />
-              <span className="text-sm">Расписание</span>
-            </CustomButton>
+              <Calendar size={24} className="text-primary-foreground" />
+              <span className="text-sm text-primary-foreground">Расписание</span>
+            </button>
 
-            <CustomButton
+            <button
               onClick={() => navigate("/admin")}
-              className="flex flex-col items-center gap-2 py-6 group"
+              className="flex flex-col items-center gap-2 py-6 bg-surface-elevated rounded-lg border border-border hover:bg-surface transition-colors"
             >
-              <Shield size={24} className="text-primary-foreground transition-colors" />
-              <span className="text-sm">Админ</span>
-            </CustomButton>
+              <Shield size={24} className="text-primary-foreground" />
+              <span className="text-sm text-primary-foreground">Админ</span>
+            </button>
           </div>
 
           {/* Settings & Logout */}

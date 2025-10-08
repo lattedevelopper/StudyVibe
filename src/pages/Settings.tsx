@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Moon, Sun, Bell, Globe, Palette, User, Shield, Trash2 } from "lucide-react";
+import { ArrowLeft, Moon, Sun, Bell, Globe, Palette, User, Shield, Trash2, Wifi } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -24,6 +24,12 @@ export default function Settings() {
   });
   const [notifications, setNotifications] = useState(true);
   const [language, setLanguage] = useState("ru");
+  const [offlineSchedule, setOfflineSchedule] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('offlineSchedule') === 'true';
+    }
+    return false;
+  });
   useEffect(() => {
     if (!user) {
       navigate("/login");
@@ -102,9 +108,44 @@ export default function Settings() {
             </CardContent>
           </Card>
 
-
-          {/* Save Button */}
-          
+          {/* Offline Section */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Wifi size={20} />
+                Оффлайн режим
+              </CardTitle>
+              <CardDescription>
+                Доступ к расписанию без интернета
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="p-2 rounded-lg bg-surface-elevated">
+                    <Wifi size={16} />
+                  </div>
+                  <div>
+                    <p className="font-medium">Расписание оффлайн</p>
+                    <p className="text-sm text-text-muted">Сохранить расписание для оффлайн доступа</p>
+                  </div>
+                </div>
+                <Switch 
+                  checked={offlineSchedule} 
+                  onCheckedChange={(checked) => {
+                    setOfflineSchedule(checked);
+                    localStorage.setItem('offlineSchedule', String(checked));
+                    if (checked) {
+                      toast({
+                        title: "Успешно",
+                        description: "Расписание сохранено для оффлайн режима"
+                      });
+                    }
+                  }}
+                />
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>;

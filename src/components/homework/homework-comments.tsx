@@ -198,15 +198,15 @@ export function HomeworkComments({ homeworkId }: HomeworkCommentsProps) {
   const CommentItem = ({ comment, isReply = false }: { comment: Comment; isReply?: boolean }) => (
     <div className={`${isReply ? "ml-12 mt-3" : ""}`}>
       <div className="flex gap-3">
-        <Avatar className="w-10 h-10 border-2 border-primary/20 shrink-0">
+        <Avatar className="w-10 h-10 border-2 border-border shrink-0">
           <AvatarImage src={comment.profile?.avatar_url || undefined} />
-          <AvatarFallback className="text-sm bg-primary/10 text-primary">
+          <AvatarFallback className="text-sm bg-surface-elevated text-foreground">
             {getInitials(comment.profile?.full_name)}
           </AvatarFallback>
         </Avatar>
 
         <div className="flex-1">
-          <div className="bg-surface-elevated rounded-2xl px-4 py-3">
+          <div className="bg-surface-elevated border border-border rounded-xl px-4 py-3 shadow-sm">
             <div className="flex items-center justify-between mb-1">
               <span className="font-semibold text-sm">
                 {comment.profile?.full_name || "Пользователь"}
@@ -214,13 +214,13 @@ export function HomeworkComments({ homeworkId }: HomeworkCommentsProps) {
               {user?.id === comment.user_id && (
                 <button
                   onClick={() => handleDeleteComment(comment.id)}
-                  className="text-text-muted hover:text-destructive transition-colors"
+                  className="text-text-muted hover:text-destructive transition-colors p-1"
                 >
                   <Trash2 size={14} />
                 </button>
               )}
             </div>
-            <p className="text-foreground whitespace-pre-wrap">{comment.content}</p>
+            <p className="text-foreground whitespace-pre-wrap text-sm leading-relaxed">{comment.content}</p>
           </div>
 
           <div className="flex items-center gap-4 mt-2 px-4">
@@ -236,20 +236,20 @@ export function HomeworkComments({ homeworkId }: HomeworkCommentsProps) {
           </div>
 
           {replyingTo === comment.id && (
-            <div className="mt-3 ml-4">
-              <div className="flex gap-2">
+            <div className="mt-3">
+              <div className="flex gap-2 bg-surface-elevated border border-border rounded-lg p-3">
                 <Textarea
                   value={replyContent}
                   onChange={(e) => setReplyContent(e.target.value)}
                   placeholder="Напишите ответ..."
-                  className="resize-none min-h-[60px]"
+                  className="resize-none min-h-[60px] border-none bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
                   disabled={loading}
                 />
                 <div className="flex flex-col gap-2">
                   <button
                     onClick={() => handleSubmitReply(comment.id)}
                     disabled={loading || !replyContent.trim()}
-                    className="p-2 bg-primary text-primary-foreground rounded-full hover:opacity-90 disabled:opacity-50 transition-opacity"
+                    className="p-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 disabled:opacity-50 transition-opacity"
                   >
                     <Send size={16} />
                   </button>
@@ -258,7 +258,7 @@ export function HomeworkComments({ homeworkId }: HomeworkCommentsProps) {
                       setReplyingTo(null);
                       setReplyContent("");
                     }}
-                    className="p-2 bg-surface-elevated rounded-full hover:bg-muted transition-colors"
+                    className="p-2 bg-surface-elevated border border-border rounded-lg hover:bg-muted transition-colors"
                   >
                     ✕
                   </button>
